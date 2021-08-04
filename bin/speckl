@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+function rglob($pattern, $flags = 0) {
+  $files = glob($pattern, $flags); 
+  foreach (glob(dirname($pattern).'/*', GLOB_ONLYDIR|GLOB_NOSORT) as $dir) {
+    $files = array_merge($files, rglob($dir.'/'.basename($pattern), $flags));
+  }
+  return $files;
+}
+
+$specDirectory = getcwd() . "/specs/*Spec.php";
+$files = rglob($specDirectory);
+
+foreach ($files as $filePath) {
+  include $filePath;
+}

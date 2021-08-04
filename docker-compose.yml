@@ -3,7 +3,9 @@ services:
     test:
         image: php:8.0.8
         volumes:
+            - ./bin:/home/bin
             - ./src:/home/src
-            - ./tests:/home/tests
+            - ./specs:/home/specs
             - ./vendor:/home/vendor
-        command: php /home/tests/ExampleTest.php
+        command: /home/bin/speckl
+        working_dir: /home
