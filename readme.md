@@ -1,5 +1,7 @@
 # Speckl
 
+Speckl is a PHP testing framework that provides the same elegant structure as Mocha, Jest and RSpec (to name a few). It provides a BDD-oriented `describe`/`it` interface that allows you to eloquently articulate what you're looking to test. 
+
 ## Example
 
 ```php
