@@ -1,5 +1,7 @@
 <?php
 
+namespace Speckl;
+
 class Expectation {
   private $negated = false;
 

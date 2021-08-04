@@ -1,45 +1,45 @@
 <?php
 
-$indentation = 0;
-$currentNode = null;
+use Speckl\TestFailure;
+use Speckl\Expectation;
+use Speckl\Nodes\Describe;
+use Speckl\Nodes\It;
 
-function withIndent($message) {
-  $output = '';
-  for ($i = 0; $i < $GLOBALS['indentation']; $i++) {
-    $output .= ' ';
-  }
-  return $output . $message;
+$speckl = [
+  'indentation' => 0,
+  'currentNode' => null,
+];
+
+function specklVar($variableName) {
+  return $GLOBALS['speckl'][$variableName];
 }
 
-function increaseIndent() {
-  $GLOBALS['indentation'] += 2;
+function describe($label, $body) {
+  $node = new Describe($label, $body, specklVar('currentNode'));
+  $GLOBALS['speckl']['currentNode'] = $node;
+  echo $node->labelWithIndent() . "\n";
+  $node->call();
+  $GLOBALS['speckl']['currentNode'] = $node->parent;
 }
 
-function decreaseIndent() {
-  $GLOBALS['indentation'] -= 2;
+function context($label, $body) {
+  describe($label, $body);
 }
 
-function describe($subject, $body) {
-  echo withIndent("$subject\n");
-  increaseIndent();
-  $body();
-  decreaseIndent();
-}
+function it($label, $body) {
+  $node = new It($label, $body, specklVar('currentNode'));
+  $GLOBALS['speckl']['currentNode'] = $node;
+  echo $node->labelWithIndent();
 
-function context($context, $body) {
-  describe($context, $body);
-}
-
-function it($description, $body) {
-  echo withIndent($description);
   try {
-    $body();
+    $node->call();
     echo " ✅";
   } catch (TestFailure $failure) {
     echo " ❌";
   } finally {
     echo "\n";
   }
+  $GLOBALS['speckl']['currentNode'] = $node->parent;
 }
 
 function expect($expectedValue) {

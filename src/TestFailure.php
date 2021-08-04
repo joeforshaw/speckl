@@ -1,5 +1,10 @@
 <?php
 
+namespace Speckl;
+
+use \Exception;
+use \Throwable;
+
 class TestFailure extends Exception {
   public function __construct($expected, $actual, $code = 0, Throwable $previous = null) {
     $this->expected = $expected;

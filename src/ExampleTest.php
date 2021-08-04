@@ -2,7 +2,9 @@
 
 include 'TestFailure.php';
 include 'Expectation.php';
-include 'TreeNode.php';
+include 'Nodes/Node.php';
+include 'Nodes/Describe.php';
+include 'Nodes/It.php';
 include 'Functions.php';
 
 class Dog {
@@ -18,6 +20,14 @@ class Dog {
 }
 
 describe(Dog::class, function() {
+  context('when the dog is happy', function() {
+    it("wags it's tail", function() {
+      $dog = new Dog();
+      $dog->isHappy = true;
+      expect($dog->tailIsWagging())->to->equal(true);
+    });
+  });
+
   it('is a good doggo', function() {
     $dog = new Dog();
     expect($dog->isGood())->to->equal(true);
@@ -26,13 +36,5 @@ describe(Dog::class, function() {
   it('is not not a good doggo', function() {
     $dog = new Dog();
     expect($dog->isGood())->toNot->equal(false);
-  });
-
-  context('when the dog is happy', function() {
-    it("wags it's tail", function() {
-      $dog = new Dog();
-      $dog->isHappy = true;
-      expect($dog->tailIsWagging())->to->equal(true);
-    });
   });
 });
