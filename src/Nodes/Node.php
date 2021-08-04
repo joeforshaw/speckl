@@ -12,11 +12,14 @@ abstract class Node {
     $this->body = $body;
     $this->parent = $parent;
 
-    if ($this->parent) {
-      $this->beforeEachs = $this->parent->beforeEachs;
-      $this->afterEachs = $this->parent->afterEachs;
-      $this->filePath = $this->parent->filePath;
-    }
+    $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
+    $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
+    $this->filePath = $this->parent ? $this->parent->filePath : null;
+  }
+
+  public function call() {
+    $body = $this->body;
+    $body();
   }
 
   public function labelWithIndent() {
@@ -24,12 +27,27 @@ abstract class Node {
     for ($i = 0; $i < $this->indentation(); $i++) {
       $output .= ' ';
     }
-    return $output . $this->label;
+    return $output . $this->label . "\n";
   }
 
-  public function call() {
-    $body = $this->body;
-    $body();
+  public function addBeforeEach($beforeEach) {
+    array_push($this->beforeEachs, $beforeEach);
+  }
+
+  public function callBeforeEachs() {
+    foreach ($this->beforeEachs as $beforeEach) {
+      $beforeEach();
+    }
+  }
+
+  public function addAfterEach($afterEach) {
+    array_push($this->afterEachs, $afterEach);
+  }
+
+  public function callAfterEachs() {
+    foreach ($this->afterEachs as $afterEach) {
+      $afterEach();
+    }
   }
 
   protected function indentation() {

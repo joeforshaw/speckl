@@ -17,7 +17,7 @@ function specklVar($variableName) {
 function describe($label, $body) {
   $node = new Describe($label, $body, specklVar('currentNode'));
   $GLOBALS['speckl']['currentNode'] = $node;
-  echo $node->labelWithIndent() . "\n";
+  echo $node->labelWithIndent();
   $node->call();
   $GLOBALS['speckl']['currentNode'] = $node->parent;
 }
@@ -29,15 +29,15 @@ function context($label, $body) {
 function it($label, $body) {
   $node = new It($label, $body, specklVar('currentNode'));
   $GLOBALS['speckl']['currentNode'] = $node;
-  echo $node->labelWithIndent();
 
   try {
+    $node->callBeforeEachs();
     $node->call();
-    echo " ✅";
+    echo $node->labelWithIndent();
   } catch (TestFailure $failure) {
-    echo " ❌";
+    echo "\033[01;31m" . $node->labelWithIndent() . "\033[0m";
   } finally {
-    echo "\n";
+    $node->callAfterEachs();
   }
   $GLOBALS['speckl']['currentNode'] = $node->parent;
 }
@@ -47,6 +47,10 @@ function expect($expectedValue) {
 }
 
 function beforeEach($body) {
-  $body();
+  $GLOBALS['speckl']['currentNode']->addBeforeEach($body);
+}
+
+function afterEach($body) {
+  $GLOBALS['speckl']['currentNode']->addAfterEach($body);
 }
   

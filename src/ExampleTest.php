@@ -20,6 +20,14 @@ class Dog {
 }
 
 describe(Dog::class, function() {
+  beforeEach(function() {
+    // echo "Before each\n";
+  });
+
+  afterEach(function() {
+    // echo "After each\n";
+  });
+
   context('when the dog is happy', function() {
     it("wags it's tail", function() {
       $dog = new Dog();
@@ -33,8 +41,8 @@ describe(Dog::class, function() {
     expect($dog->isGood())->to->equal(true);
   });
 
-  it('is not not a good doggo', function() {
+  it('is a bad doggo', function() {
     $dog = new Dog();
-    expect($dog->isGood())->toNot->equal(false);
+    expect($dog->isGood())->to->equal(false);
   });
 });
