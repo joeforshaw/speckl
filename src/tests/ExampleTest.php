@@ -1,12 +1,6 @@
 <?php
 
-include 'TestFailure.php';
-include 'Expectation.php';
-include 'Nodes/Scope.php';
-include 'Nodes/Node.php';
-include 'Nodes/Describe.php';
-include 'Nodes/It.php';
-include 'Functions.php';
+require_once __DIR__.'/../vendor/autoload.php'; // Autoload files using Composer autoload
 
 class Dog {
   public $isHappy;
@@ -30,8 +24,11 @@ describe(Dog::class, function() {
   });
 
   context('when the dog is happy', function() {
-    it("wags it's tail", function() {
+    beforeEach(function() {
       $this->dog->isHappy = true;
+    });
+
+    it("wags it's tail", function() {
       expect($this->dog->tailIsWagging())->to->equal(true);
     });
   });

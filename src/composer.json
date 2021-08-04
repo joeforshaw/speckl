@@ -1,0 +1,16 @@
+{
+    "name": "joeforshaw/speckl",
+    "authors": [
+        {
+            "name": "Joe Forshaw",
+            "email": "joe@joeforshaw.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Speckl\\": "Speckl"
+        },
+        "files": ["Functions.php"]
+    }
+}

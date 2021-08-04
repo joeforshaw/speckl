@@ -5,7 +5,7 @@ use Speckl\Expectation;
 use Speckl\Nodes\Describe;
 use Speckl\Nodes\It;
 
-$speckl = [
+$GLOBALS['speckl'] = [
   'indentation' => 0,
   'currentNode' => null,
 ];
