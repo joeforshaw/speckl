@@ -1,10 +1,10 @@
 <?php
 
-namespace Speckl\Nodes;
+namespace Speckl;
 
-use Speckl\Nodes\Scope;
+use Speckl\Scope;
 
-abstract class Node {
+class Block {
   protected $beforeEachs,
             $afterEachs,
             $filePath;

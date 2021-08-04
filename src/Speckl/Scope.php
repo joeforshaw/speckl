@@ -1,6 +1,6 @@
 <?php
 
-namespace Speckl\Nodes;
+namespace Speckl;
 
 class Scope {
   public function __construct($parent) {

@@ -46,5 +46,4 @@ describe(Dog::class, function() {
 ## TODO
 
 * Line numbers
-* Executable binary
-* Loading files
+* Post-run report

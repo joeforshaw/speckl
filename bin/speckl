@@ -17,6 +17,12 @@ if (count($argv) > 1) {
   $files = rglob(getcwd() . "/specs/*Spec.php");
 }
 
+$GLOBALS['speckl'] = [
+  'currentBlock' => null,
+  'currentPath' => null
+];
+
 foreach ($files as $filePath) {
+  $GLOBALS['speckl']['currentPath'] = $filePath;
   include $filePath;
 }

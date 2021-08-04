@@ -2,24 +2,19 @@
 
 use Speckl\TestFailure;
 use Speckl\Expectation;
-use Speckl\Nodes\Describe;
-use Speckl\Nodes\It;
-
-$GLOBALS['speckl'] = [
-  'indentation' => 0,
-  'currentNode' => null,
-];
-
-function specklVar($variableName) {
-  return $GLOBALS['speckl'][$variableName];
-}
+use Speckl\Block;
 
 function describe($label, $body) {
-  $node = new Describe($label, $body, specklVar('currentNode'));
-  $GLOBALS['speckl']['currentNode'] = $node;
-  echo $node->labelWithIndent();
-  $node->call();
-  $GLOBALS['speckl']['currentNode'] = $node->parent;
+  $block = new Block(
+    $label,
+    $body,
+    $GLOBALS['speckl']['currentBlock'],
+    $GLOBALS['speckl']['currentPath']
+  );
+  $GLOBALS['speckl']['currentBlock'] = $block;
+  echo $block->labelWithIndent();
+  $block->call();
+  $GLOBALS['speckl']['currentBlock'] = $block->parent;
 }
 
 function context($label, $body) {
@@ -27,19 +22,23 @@ function context($label, $body) {
 }
 
 function it($label, $body) {
-  $node = new It($label, $body, specklVar('currentNode'));
-  $GLOBALS['speckl']['currentNode'] = $node;
+  $block = new Block(
+    $label,
+    $body,
+    $GLOBALS['speckl']['currentBlock']
+  );
+  $GLOBALS['speckl']['currentBlock'] = $block;
 
   try {
-    $node->callBeforeEachs();
-    $node->call();
-    echo $node->labelWithIndent();
+    $block->callBeforeEachs();
+    $block->call();
+    echo $block->labelWithIndent();
   } catch (TestFailure $failure) {
-    echo "\033[01;31m" . $node->labelWithIndent() . "\033[0m";
+    echo "\033[01;31m" . $block->labelWithIndent() . "\033[0m";
   } finally {
-    $node->callAfterEachs();
+    $block->callAfterEachs();
   }
-  $GLOBALS['speckl']['currentNode'] = $node->parent;
+  $GLOBALS['speckl']['currentBlock'] = $block->parent;
 }
 
 function expect($expectedValue) {
@@ -47,10 +46,10 @@ function expect($expectedValue) {
 }
 
 function beforeEach($body) {
-  $GLOBALS['speckl']['currentNode']->addBeforeEach($body);
+  $GLOBALS['speckl']['currentBlock']->addBeforeEach($body);
 }
 
 function afterEach($body) {
-  $GLOBALS['speckl']['currentNode']->addAfterEach($body);
+  $GLOBALS['speckl']['currentBlock']->addAfterEach($body);
 }
   
