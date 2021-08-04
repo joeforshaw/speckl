@@ -1,0 +1,7 @@
+version: '3.5'
+services:
+    test:
+        image: php:8.0.8
+        volumes:
+            - ./src:/var/www/html/
+        command: php /var/www/html/ExampleTest.php include_path=/var/www/html
