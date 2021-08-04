@@ -21,11 +21,11 @@ class Dog {
 
 describe(Dog::class, function() {
   beforeEach(function() {
-    // echo "Before each\n";
+    // Do stuff before
   });
 
   afterEach(function() {
-    // echo "After each\n";
+    // Do stuff after
   });
 
   context('when the dog is happy', function() {
