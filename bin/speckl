@@ -11,8 +11,11 @@ function rglob($pattern, $flags = 0) {
   return $files;
 }
 
-$specDirectory = getcwd() . "/specs/*Spec.php";
-$files = rglob($specDirectory);
+if (count($argv) > 1) {
+  $files = array_slice($argv, 1);
+} else {
+  $files = rglob(getcwd() . "/specs/*Spec.php");
+}
 
 foreach ($files as $filePath) {
   include $filePath;
