@@ -2,6 +2,8 @@
 
 namespace Speckl\Nodes;
 
+use Speckl\Nodes\Scope;
+
 abstract class Node {
   protected $beforeEachs,
             $afterEachs,
@@ -9,17 +11,16 @@ abstract class Node {
 
   public function __construct($label, $body, $parent) {
     $this->label = $label;
-    $this->body = $body;
     $this->parent = $parent;
-
+    $this->scope = new Scope($this->parent ? $this->parent->scope : null);
+    $this->body = $body->bindTo($this->scope);
     $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
     $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
     $this->filePath = $this->parent ? $this->parent->filePath : null;
   }
 
   public function call() {
-    $body = $this->body;
-    $body();
+    call_user_func($this->body);
   }
 
   public function labelWithIndent() {
