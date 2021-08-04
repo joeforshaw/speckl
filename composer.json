@@ -9,8 +9,8 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "Speckl\\": "Speckl"
+            "Speckl\\": "src/Speckl"
         },
-        "files": ["Functions.php"]
+        "files": ["src/Functions.php"]
     }
 }

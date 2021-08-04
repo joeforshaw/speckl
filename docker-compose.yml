@@ -3,5 +3,7 @@ services:
     test:
         image: php:8.0.8
         volumes:
-            - ./src:/home
+            - ./src:/home/src
+            - ./tests:/home/tests
+            - ./vendor:/home/vendor
         command: php /home/tests/ExampleTest.php

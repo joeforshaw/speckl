@@ -6,5 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Speckl\\' => array($baseDir . '/Speckl'),
+    'Speckl\\' => array($baseDir . '/src/Speckl'),
 );
