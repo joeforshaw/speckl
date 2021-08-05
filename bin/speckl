@@ -1,7 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-require_once __DIR__.'/../vendor/autoload.php';
+foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
+  if (file_exists($file)) {
+      define('SPECKL_AUTOLOAD', $file);
+      break;
+  }
+}
+require_once SPECKL_AUTOLOAD;
 
 function rglob($pattern, $flags = 0) {
   $files = glob($pattern, $flags); 
