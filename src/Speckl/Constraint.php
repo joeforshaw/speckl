@@ -2,6 +2,8 @@
 
 namespace Speckl;
 
+use Exception;
+
 class Constraint {
   public function __construct($actual, $negated) {
     $this->actual = $actual;
@@ -32,7 +34,6 @@ class Constraint {
   public function equal($exp) { $this->check($this->actual === $exp, $exp); }
   public function equalTo($exp) { $this->equal($exp); }
   public function eq($exp) { $this->equal($exp); }
-  public function equals($exp) { $this->equal($exp); }
 
   public function greaterThan($exp) { $this->check($this->actual > $exp, $exp); }
   public function beGreaterThan($exp) { $this->greaterThan($exp); }
@@ -50,11 +51,36 @@ class Constraint {
 
   public function haveKey($key) { array_key_exists($key, $this->actual); }
 
+  public function raiseAnException() {
+    try {
+      call_user_func($this->actual);
+    } catch (Exception $e) {
+      $this->check(true);
+      return;
+    }
+    $this->check(false);
+  }
+
+  public function fail() {
+    try {
+      call_user_func($this->actual);
+    } catch (TestFailure $failure) {
+      $this->check(true);
+      return;
+    }
+    $this->check(false);
+  }
+
   private function check($boolean, $exp = null) {
     $this->expected = $exp;
     if ($this->negated) { $boolean = !$boolean; }
     if (!$boolean) {
-      throw new TestFailure($this->actual, $this->expected);
+      throw new TestFailure($this->failureMessage());
     }
+  }
+
+  private function failureMessage() {
+    return 'Expected: ' . var_export($this->expected, true) . "\n" .
+           'Actual: ' . var_export($this->actual, true);
   }
 }
