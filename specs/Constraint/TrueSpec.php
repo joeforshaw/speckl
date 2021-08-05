@@ -24,11 +24,11 @@ describe(Constraint::class, function() {
   });
 
   describe('#beTrue', function() {
-    it('works for true', function() {
+    it('passes for true', function() {
       expect(true)->to->beTrue();
     });
 
-    it('works for negated true', function() {
+    it('passes for negated true', function() {
       expect(false)->toNot->beTrue();
     });
   });

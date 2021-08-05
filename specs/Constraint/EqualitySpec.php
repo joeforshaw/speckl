@@ -5,19 +5,19 @@ use Speckl\Constraint;
 describe(Constraint::class, function() {
   describe('#equal', function() {
     context('when comparing booleans', function() {
-      it('works for true', function() {
+      it('passes for true', function() {
         expect(true)->to->equal(true);
       });
     
-      it('works for negated true', function() {
+      it('passes for negated true', function() {
         expect(true)->toNot->equal(false);
       });
     
-      it('works for false', function() {
+      it('passes for false', function() {
         expect(false)->to->equal(false);
       });
     
-      it('works for negated false', function() {
+      it('passes for negated false', function() {
         expect(false)->toNot->equal(true);
       });
     
