@@ -45,5 +45,8 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Run by line number
+* Test constraints
 * Post-run report
+* Run by line number
+* Laravel integration
+* Get it on packagist
