@@ -45,5 +45,5 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Line numbers
+* Run by line number
 * Post-run report

@@ -25,7 +25,8 @@ function it($label, $body) {
   $block = new Block(
     $label,
     $body,
-    $GLOBALS['speckl']['currentBlock']
+    $GLOBALS['speckl']['currentBlock'],
+    $GLOBALS['speckl']['currentPath']
   );
   $GLOBALS['speckl']['currentBlock'] = $block;
 

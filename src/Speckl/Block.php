@@ -7,16 +7,16 @@ use Speckl\Scope;
 class Block {
   protected $beforeEachs,
             $afterEachs,
-            $filePath;
+            $path;
 
-  public function __construct($label, $body, $parent) {
+  public function __construct($label, $body, $parent, $path) {
     $this->label = $label;
     $this->parent = $parent;
     $this->scope = new Scope($this->parent ? $this->parent->scope : null);
     $this->body = $body->bindTo($this->scope);
     $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
     $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
-    $this->filePath = $this->parent ? $this->parent->filePath : null;
+    $this->path = $path;
   }
 
   public function call() {
