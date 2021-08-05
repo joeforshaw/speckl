@@ -22,8 +22,7 @@ class Constraint {
   public function string() { $this->check(is_string($this->actual)); }
   public function beString() { $this->string(); }
 
-  public function empty() { $this->check(empty($this->actual)); }
-  public function beEmpty() { $this->empty(); }
+  public function beEmpty() { $this->check(empty($this->actual)); }
 
   public function theSameSizeAs($exp) { $this->check(count($this->actual) === count($exp)); }
   public function beTheSameSizeAs($exp) { $this->theSameSizeAs($exp); }

@@ -6,7 +6,9 @@
             "email": "joe@joeforshaw.com"
         }
     ],
-    "require": {},
+    "require": {
+        "php": ">=5.5"
+    },
     "bin": ["bin/speckl"],
     "autoload": {
         "psr-4": {

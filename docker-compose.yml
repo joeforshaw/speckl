@@ -1,7 +1,7 @@
 version: '3.5'
 services:
     test:
-        image: php:8.0.8
+        image: php:5.5.30
         volumes:
             - ./bin:/home/bin
             - ./src:/home/src
