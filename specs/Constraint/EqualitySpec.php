@@ -34,9 +34,11 @@ describe(Constraint::class, function() {
       });
 
       it('fails when comparing a boolean against a non-boolean', function() {
-        expect(function() {
-          expect(true)->to->equal('true');
-        })->to->fail();
+        expect(true)->toNot->equal('true');
+      });
+
+      it('fails when comparing a boolean against null', function() {
+        expect(false)->toNot->equal(null);
       });
     });
   });
