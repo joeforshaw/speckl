@@ -29,16 +29,4 @@ if (count($argv) > 1) {
   $files = rglob(getcwd() . "/specs/*Spec.php");
 }
 
-if (!array_key_exists('speckl', $GLOBALS)) {
-  $GLOBALS['speckl'] = [];
-}
-$GLOBALS['speckl']['currentBlock'] = null;
-$GLOBALS['speckl']['currentPath'] = null;
-if (!$GLOBALS['speckl']['blockClass']) {
-  $GLOBALS['speckl']['blockClass'] = Speckl\Block::class;
-}
-
-foreach ($files as $filePath) {
-  $GLOBALS['speckl']['currentPath'] = $filePath;
-  include $filePath;
-}
+(new Speckl\Runner())->main($files);
