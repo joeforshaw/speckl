@@ -29,7 +29,7 @@ if (count($argv) > 1) {
   $files = rglob(getcwd() . "/specs/*Spec.php");
 }
 
-if (!$GLOBALS['speckl']) {
+if (!array_key_exists('speckl', $GLOBALS)) {
   $GLOBALS['speckl'] = [];
 }
 $GLOBALS['speckl']['currentBlock'] = null;
