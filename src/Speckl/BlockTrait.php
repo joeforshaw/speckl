@@ -11,6 +11,17 @@ trait BlockTrait
           $body,
           $scope;
 
+  public function initialise($label, $body, $parent, $path)
+  {
+    $this->label = $label;
+    $this->parent = $parent;
+    $this->scope = new Scope($this->parent ? $this->parent->scope : null);
+    $this->body = $body->bindTo($this->scope);
+    $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
+    $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
+    $this->path = $path;
+  }
+
   public function callBody()
   {
     call_user_func($this->body);
