@@ -2,10 +2,9 @@
 
 use Speckl\TestFailure;
 use Speckl\Expectation;
-use Speckl\Block;
 
 function describe($label, $body) {
-  $block = new Block(
+  $block = new $GLOBALS['speckl']['blockClass'](
     $label,
     $body,
     $GLOBALS['speckl']['currentBlock'],
@@ -22,7 +21,7 @@ function context($label, $body) {
 }
 
 function it($label, $body) {
-  $block = new Block(
+  $block = new $GLOBALS['speckl']['blockClass'](
     $label,
     $body,
     $GLOBALS['speckl']['currentBlock'],

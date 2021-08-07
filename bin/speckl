@@ -31,8 +31,10 @@ if (count($argv) > 1) {
 
 $GLOBALS['speckl'] = [
   'currentBlock' => null,
-  'currentPath' => null
+  'currentPath' => null,
+  'blockClass' => Speckl\Block::class
 ];
+
 foreach ($files as $filePath) {
   $GLOBALS['speckl']['currentPath'] = $filePath;
   include $filePath;
