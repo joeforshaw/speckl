@@ -13,7 +13,7 @@ function describe($label, $body) {
   );
   $GLOBALS['speckl']['currentBlock'] = $block;
   echo $block->labelWithIndent();
-  $block->call();
+  $block->callBody();
   $GLOBALS['speckl']['currentBlock'] = $block->parent;
 }
 
@@ -32,7 +32,7 @@ function it($label, $body) {
 
   try {
     $block->callBeforeEachs();
-    $block->call();
+    $block->callBody();
     echo $block->labelWithIndent();
   } catch (TestFailure $failure) {
     echo "\033[01;31m" . $block->labelWithIndent() . "\033[0m";
