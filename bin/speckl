@@ -29,11 +29,14 @@ if (count($argv) > 1) {
   $files = rglob(getcwd() . "/specs/*Spec.php");
 }
 
-$GLOBALS['speckl'] = [
-  'currentBlock' => null,
-  'currentPath' => null,
-  'blockClass' => Speckl\Block::class
-];
+if (!$GLOBALS['speckl']) {
+  $GLOBALS['speckl'] = [];
+}
+$GLOBALS['speckl']['currentBlock'] = null;
+$GLOBALS['speckl']['currentPath'] = null;
+if (!$GLOBALS['speckl']['blockClass']) {
+  $GLOBALS['speckl']['blockClass'] = Speckl\Block::class;
+}
 
 foreach ($files as $filePath) {
   $GLOBALS['speckl']['currentPath'] = $filePath;
