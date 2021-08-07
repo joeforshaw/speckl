@@ -2,8 +2,7 @@
 
 namespace Speckl;
 
-trait BlockTrait
-{
+trait BlockTrait {
   public $path, $parent;
 
   private $beforeEachs,
@@ -12,8 +11,7 @@ trait BlockTrait
           $scope,
           $pending;
 
-  public function initialise($label, $body, $parent, $path, $pending)
-  {
+  public function initialise($label, $body, $parent, $path, $pending) {
     $this->label = $label;
     $this->parent = $parent;
     $this->scope = new Scope($this->parent ? $this->parent->scope : null);
@@ -24,13 +22,11 @@ trait BlockTrait
     $this->pending = $pending;
   }
 
-  public function callBody()
-  {
+  public function callBody() {
     call_user_func($this->body);
   }
 
-  public function labelWithIndent()
-  {
+  public function labelWithIndent() {
     $output = '';
     for ($i = 0; $i < $this->indentation(); $i++) {
       $output .= ' ';
@@ -42,32 +38,27 @@ trait BlockTrait
     return $output . "\n";
   }
 
-  public function addBeforeEach($beforeEach)
-  {
+  public function addBeforeEach($beforeEach) {
     array_push($this->beforeEachs, $beforeEach);
   }
 
-  public function callBeforeEachs()
-  {
+  public function callBeforeEachs() {
     foreach ($this->beforeEachs as $beforeEach) {
       $beforeEach();
     }
   }
 
-  public function addAfterEach($afterEach)
-  {
+  public function addAfterEach($afterEach) {
     array_push($this->afterEachs, $afterEach);
   }
 
-  public function callAfterEachs()
-  {
+  public function callAfterEachs() {
     foreach ($this->afterEachs as $afterEach) {
       $afterEach();
     }
   }
 
-  protected function indentation()
-  {
+  protected function indentation() {
     if (!$this->parent) {
       return 0;
     }
