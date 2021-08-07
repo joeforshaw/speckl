@@ -9,9 +9,10 @@ trait BlockTrait
   private $beforeEachs,
           $afterEachs,
           $body,
-          $scope;
+          $scope,
+          $pending;
 
-  public function initialise($label, $body, $parent, $path)
+  public function initialise($label, $body, $parent, $path, $pending)
   {
     $this->label = $label;
     $this->parent = $parent;
@@ -20,6 +21,7 @@ trait BlockTrait
     $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
     $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
     $this->path = $path;
+    $this->pending = $pending;
   }
 
   public function callBody()
@@ -33,7 +35,11 @@ trait BlockTrait
     for ($i = 0; $i < $this->indentation(); $i++) {
       $output .= ' ';
     }
-    return $output . $this->label . "\n";
+    $output .= $this->label;
+    if ($this->pending) {
+      $output .= ' (pending)';
+    }
+    return $output . "\n";
   }
 
   public function addBeforeEach($beforeEach)

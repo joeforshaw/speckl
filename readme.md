@@ -48,5 +48,3 @@ describe(Dog::class, function() {
 * Test constraints
 * Post-run report
 * Run by line number
-* Laravel integration
-* Skip tests (xit)
