@@ -13,16 +13,16 @@ trait BlockTrait {
           $body,
           $pending;
 
-  public function initialise($label, $body, $parentBlock, $path, $pending) {
-    $this->label = $label;
+  public function initialise($args) {
+    $this->label = $args['label'];
     $this->childBlocks = [];
-    $this->addParentBlock($parentBlock);
+    $this->addParentBlock($args['parentBlock']);
     $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
-    $this->body = $body->bindTo($this->scope);
+    $this->body = $args['body']->bindTo($this->scope);
     $this->beforeEachs = $this->parentBlock ? $this->parentBlock->beforeEachs : [];
     $this->afterEachs = $this->parentBlock ? $this->parentBlock->afterEachs : [];
-    $this->path = $path;
-    $this->pending = $pending;
+    $this->path = $args['path'];
+    $this->pending = !!$args['pending'];
   }
 
   public function callBody() {

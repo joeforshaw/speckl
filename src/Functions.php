@@ -6,12 +6,12 @@ use Speckl\TestFailure;
 
 function describe($label, callable $body) {
   $blockClass = Config::get('blockClass');
-  $block = new $blockClass(
-    $label,
-    $body,
-    Config::get('currentBlock'),
-    Config::get('currentPath')
-  );
+  $block = new $blockClass([
+    'label' => $label,
+    'body' => $body,
+    'parentBlock' => Config::get('currentBlock'),
+    'path' => Config::get('currentPath')
+  ]);
   Config::set('currentBlock', $block);
   echo $block->labelWithIndent();
   $block->callBody();
@@ -28,12 +28,12 @@ function context($label, callable $body) {
 
 function it($label, callable $body) {
   $blockClass = Config::get('blockClass');
-  $block = new $blockClass(
-    $label,
-    $body,
-    Config::get('currentBlock'),
-    Config::get('currentPath')
-  );
+  $block = new $blockClass([
+    'label' => $label,
+    'body' => $body,
+    'parentBlock' => Config::get('currentBlock'),
+    'path' => Config::get('currentPath')
+  ]);
   Config::set('currentBlock', $block);
 
   try {
@@ -50,13 +50,13 @@ function it($label, callable $body) {
 
 function xit($label, callable $body) {
   $blockClass = Config::get('blockClass');
-  $block = new $blockClass(
-    $label,
-    $body,
-    Config::get('currentBlock'),
-    Config::get('currentPath'),
-    true
-  );
+  $block = new $blockClass([
+    'label' => $label,
+    'body' => $body,
+    'parentBlock' => Config::get('currentBlock'),
+    'path' => Config::get('currentPath'),
+    'pending' => true
+  ]);
   echo "\033[33m" . $block->labelWithIndent() . "\033[0m";
 }
 
