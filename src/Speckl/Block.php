@@ -24,9 +24,12 @@ abstract class Block {
     $this->setupRelatedBlocks($args['parentBlock']);
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
-    $scopeClass = Config::get('scopeClass');
-    $this->scope = new $scopeClass($this->parentBlock ? $this->parentBlock->scope : null);
+    $this->scope = $this->setupScope(Config::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
+  }
+
+  public function setupScope($scopeClass) {
+    return new $scopeClass($this->parentBlock ? $this->parentBlock->scope : null);
   }
 
   public function runBody() {
