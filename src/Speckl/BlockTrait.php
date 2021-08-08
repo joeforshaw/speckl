@@ -65,7 +65,7 @@ trait BlockTrait {
   }
 
   public function addBeforeCallback($beforeCallback) {
-    array_push($this->beforeCallbacks, $beforeCallback);
+    array_push($this->beforeCallbacks, $this->bindScope($beforeCallback));
   }
 
   public function runBeforeCallbacks() {
@@ -75,7 +75,7 @@ trait BlockTrait {
   }
 
   public function addAfterCallback($afterCallback) {
-    array_push($this->afterCallbacks, $afterCallback);
+    array_push($this->afterCallbacks, $this->bindScope($afterCallback));
   }
 
   public function runAfterCallbacks() {
