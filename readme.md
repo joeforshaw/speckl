@@ -45,6 +45,8 @@ describe(Dog::class, function() {
 
 ## TODO
 
+* Two pass load/run
+* Shared contexts
 * Test constraints
 * Post-run report
 * Run by line number
