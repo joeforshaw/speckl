@@ -69,7 +69,7 @@ trait BlockTrait {
     }
   }
 
-  public function addAfterCallbacks($afterCallback) {
+  public function addAfterCallback($afterCallback) {
     array_push($this->afterCallbacks, $afterCallback);
   }
 
