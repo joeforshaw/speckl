@@ -5,7 +5,7 @@ namespace Speckl;
 class ExampleBlock extends Block implements RunnableBlock {
   public function __construct($args) {
     parent::__construct($args); 
-    $this->addBeforeCallback(function() {
+    $this->prependBeforeCallback(function() {
       $this->scope->beforeCallback();
     });
     $this->addAfterCallback(function() {

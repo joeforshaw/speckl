@@ -64,6 +64,10 @@ abstract class Block {
     array_push($this->beforeCallbacks, $beforeCallback);
   }
 
+  public function prependBeforeCallback($beforeCallback) {
+    array_unshift($this->beforeCallbacks, $beforeCallback);
+  }
+
   public function runBeforeCallbacks() {
     foreach ($this->beforeCallbacks as $beforeCallback) {
       $beforeCallback();
