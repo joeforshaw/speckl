@@ -3,8 +3,10 @@
 namespace Speckl;
 
 class Scope {
-  public function __construct($parent) {
-    $this->parent = $parent;
+  private $parentScope;
+
+  public function __construct($parentScope) {
+    $this->parentScope = $parentScope;
   }
 
   // Adopts a decorator pattern, wrapping the parent's scope
@@ -12,8 +14,8 @@ class Scope {
     if (property_exists($this, $property)) {
       return $this->$property;
     }
-    if ($this->parent) {
-      return $this->parent->$property;
+    if ($this->parentScope) {
+      return $this->parentScope->$property;
     }
   }
 }

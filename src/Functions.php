@@ -15,7 +15,7 @@ function describe($label, callable $body) {
   Config::set('currentBlock', $block);
   echo $block->labelWithIndent();
   $block->callBody();
-  Config::set('currentBlock', $block->parent);
+  Config::set('currentBlock', $block->parentBlock);
 }
 
 function scenario($label, callable $body) {
@@ -45,7 +45,7 @@ function it($label, callable $body) {
   } finally {
     $block->callAfterEachs();
   }
-  Config::set('currentBlock', $block->parent);
+  Config::set('currentBlock', $block->parentBlock);
 }
 
 function xit($label, callable $body) {

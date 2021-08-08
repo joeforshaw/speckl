@@ -3,27 +3,41 @@
 namespace Speckl;
 
 trait BlockTrait {
-  public $path, $parent;
+  public $path,
+         $childBlocks,
+         $parentBlock,
+         $scope;
 
   private $beforeEachs,
           $afterEachs,
           $body,
-          $scope,
           $pending;
 
-  public function initialise($label, $body, $parent, $path, $pending) {
+  public function initialise($label, $body, $parentBlock, $path, $pending) {
     $this->label = $label;
-    $this->parent = $parent;
-    $this->scope = new Scope($this->parent ? $this->parent->scope : null);
+    $this->childBlocks = [];
+    $this->addParentBlock($parentBlock);
+    $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
     $this->body = $body->bindTo($this->scope);
-    $this->beforeEachs = $this->parent ? $this->parent->beforeEachs : [];
-    $this->afterEachs = $this->parent ? $this->parent->afterEachs : [];
+    $this->beforeEachs = $this->parentBlock ? $this->parentBlock->beforeEachs : [];
+    $this->afterEachs = $this->parentBlock ? $this->parentBlock->afterEachs : [];
     $this->path = $path;
     $this->pending = $pending;
   }
 
   public function callBody() {
     call_user_func($this->body);
+  }
+
+  public function addParentBlock($parentBlock) {
+    $this->parentBlock = $parentBlock;
+    if ($this->parentBlock) {
+      $this->parentBlock->addChildBlock($this);
+    }
+  }
+
+  public function addChildBlock($childBlock) {
+    array_push($this->childBlocks, $childBlock);
   }
 
   public function labelWithIndent() {
@@ -59,9 +73,9 @@ trait BlockTrait {
   }
 
   protected function indentation() {
-    if (!$this->parent) {
+    if (!$this->parentBlock) {
       return 0;
     }
-    return $this->parent->indentation() + 2;
+    return $this->parentBlock->indentation() + 2;
   }
 }
