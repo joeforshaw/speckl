@@ -20,7 +20,8 @@ trait BlockTrait {
     $this->label = $args['label'];
     $this->childBlocks = [];
     $this->setupRelatedBlocks($args['parentBlock']);
-    $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
+    $scopeClass = Config::get('scopeClass');
+    $this->scope = new $scopeClass($this->parentBlock ? $this->parentBlock->scope : null);
     $this->body = $this->bindScope($args['body']);
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];

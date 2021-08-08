@@ -29,6 +29,9 @@ class Runner {
     if (!Config::get('exampleBlockClass')) {
       Config::set('exampleBlockClass', ExampleBlock::class);
     }
+    if (!Config::get('scopeClass')) {
+      Config::set('scopeClass', Scope::class);
+    }
 
     // Load the spec tree
     foreach ($this->files as $filePath) {
