@@ -45,7 +45,7 @@ abstract class Block {
   }
 
   public function bindScope($body) {
-    return $body->bindTo($this->scope);
+    return $body->bindTo($this->scope, $this->scope);
   }
 
   public function indentedLabel() {
