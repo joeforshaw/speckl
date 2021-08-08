@@ -45,7 +45,6 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Shared contexts
 * Test constraints
 * Post-run report
 * Run by line number
