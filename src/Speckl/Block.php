@@ -29,7 +29,10 @@ abstract class Block {
   }
 
   public function setupScope($scopeClass) {
-    return new $scopeClass($this->parentBlock ? $this->parentBlock->scope : null);
+    return new $scopeClass(
+      $this->type . '/' . $this->label,
+      $this->parentBlock ? $this->parentBlock->scope : null
+    );
   }
 
   public function runBody() {
