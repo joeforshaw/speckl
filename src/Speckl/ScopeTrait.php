@@ -3,8 +3,8 @@
 namespace Speckl;
 
 trait ScopeTrait {
-  private $debugLabel,
-          $parentScope;
+  public $debugLabel;
+  private $parentScope;
 
   public function __construct($debugLabel, $parentScope) {
     $this->debugLabel = $debugLabel;
