@@ -9,11 +9,12 @@ function describe($label, callable $body) {
   $block = new $blockClass([
     'label' => $label,
     'body' => $body,
+    'runner' => Config::get('runner'),
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
   ]);
   Config::set('currentBlock', $block);
-  echo $block->labelWithIndent();
+  echo $block->indentedLabel();
   $block->callBody();
   Config::set('currentBlock', $block->parentBlock);
 }
@@ -39,9 +40,9 @@ function it($label, callable $body) {
   try {
     $block->callBeforeEachs();
     $block->callBody();
-    echo "\033[32m" . $block->labelWithIndent() . "\033[0m";
+    echo "\033[32m" . $block->indentedLabel() . "\033[0m";
   } catch (TestFailure $failure) {
-    echo "\033[01;31m" . $block->labelWithIndent() . "\033[0m";
+    echo "\033[01;31m" . $block->indentedLabel() . "\033[0m";
   } finally {
     $block->callAfterEachs();
   }
@@ -57,7 +58,7 @@ function xit($label, callable $body) {
     'path' => Config::get('currentPath'),
     'pending' => true
   ]);
-  echo "\033[33m" . $block->labelWithIndent() . "\033[0m";
+  echo "\033[33m" . $block->indentedLabel() . "\033[0m";
 }
 
 function expect($expectedValue) {

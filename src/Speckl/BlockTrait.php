@@ -10,11 +10,13 @@ trait BlockTrait {
 
   private $beforeEachs,
           $afterEachs,
+          $runner,
           $body,
           $pending;
 
   public function initialise($args) {
     $this->label = $args['label'];
+    $this->runner = $args['runner'];
     $this->childBlocks = [];
     $this->addParentBlock($args['parentBlock']);
     $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
@@ -40,7 +42,7 @@ trait BlockTrait {
     array_push($this->childBlocks, $childBlock);
   }
 
-  public function labelWithIndent() {
+  public function indentedLabel() {
     $output = '';
     for ($i = 0; $i < $this->indentation(); $i++) {
       $output .= ' ';

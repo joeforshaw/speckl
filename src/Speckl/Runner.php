@@ -15,6 +15,7 @@ class Runner {
   }
 
   public function run() {
+    Config::set('runner', $this);
     Config::set('currentBlock', null);
     Config::set('currentPath', null);
     if (!Config::get('blockClass')) {
