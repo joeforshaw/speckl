@@ -30,7 +30,7 @@ class Runner {
     // Load the spec tree
     foreach ($this->files as $filePath) {
       Config::set('currentPath', $filePath);
-      include $filePath;
+      require_once $filePath;
     }
 
     // Run the spec tree

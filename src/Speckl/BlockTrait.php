@@ -25,7 +25,7 @@ trait BlockTrait {
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
     $this->path = $args['path'];
-    $this->pending = !!$args['pending'];
+    $this->pending = array_key_exists('pending', $args) ? $args['pending'] : false;
   }
 
   public function runBody() {
