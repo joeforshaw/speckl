@@ -1,19 +1,21 @@
 <?php
 
-use Speckl\TestFailure;
+use Speckl\Config;
 use Speckl\Expectation;
+use Speckl\TestFailure;
 
 function describe($label, callable $body) {
-  $block = new $GLOBALS['speckl']['blockClass'](
+  $blockClass = Config::get('blockClass');
+  $block = new $blockClass(
     $label,
     $body,
-    $GLOBALS['speckl']['currentBlock'],
-    $GLOBALS['speckl']['currentPath']
+    Config::get('currentBlock'),
+    Config::get('currentPath')
   );
-  $GLOBALS['speckl']['currentBlock'] = $block;
+  Config::set('currentBlock', $block);
   echo $block->labelWithIndent();
   $block->callBody();
-  $GLOBALS['speckl']['currentBlock'] = $block->parent;
+  Config::set('currentBlock', $block->parent);
 }
 
 function scenario($label, callable $body) {
@@ -25,13 +27,14 @@ function context($label, callable $body) {
 }
 
 function it($label, callable $body) {
-  $block = new $GLOBALS['speckl']['blockClass'](
+  $blockClass = Config::get('blockClass');
+  $block = new $blockClass(
     $label,
     $body,
-    $GLOBALS['speckl']['currentBlock'],
-    $GLOBALS['speckl']['currentPath']
+    Config::get('currentBlock'),
+    Config::get('currentPath')
   );
-  $GLOBALS['speckl']['currentBlock'] = $block;
+  Config::set('currentBlock', $block);
 
   try {
     $block->callBeforeEachs();
@@ -42,15 +45,16 @@ function it($label, callable $body) {
   } finally {
     $block->callAfterEachs();
   }
-  $GLOBALS['speckl']['currentBlock'] = $block->parent;
+  Config::set('currentBlock', $block->parent);
 }
 
 function xit($label, callable $body) {
-  $block = new $GLOBALS['speckl']['blockClass'](
+  $blockClass = Config::get('blockClass');
+  $block = new $blockClass(
     $label,
     $body,
-    $GLOBALS['speckl']['currentBlock'],
-    $GLOBALS['speckl']['currentPath'],
+    Config::get('currentBlock'),
+    Config::get('currentPath'),
     true
   );
   echo "\033[33m" . $block->labelWithIndent() . "\033[0m";
@@ -61,10 +65,10 @@ function expect($expectedValue) {
 }
 
 function beforeEach(callable $body) {
-  $GLOBALS['speckl']['currentBlock']->addBeforeEach($body);
+  Config::get('currentBlock')->addBeforeEach($body);
 }
 
 function afterEach(callable $body) {
-  $GLOBALS['speckl']['currentBlock']->addAfterEach($body);
+  Config::get('currentBlock')->addAfterEach($body);
 }
   
