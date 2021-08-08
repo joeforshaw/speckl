@@ -3,21 +3,29 @@
 namespace Speckl;
 
 use Speckl\Block;
+use Speckl\Config;
 
 class Runner {
-  public function main($files) {
-    if (!array_key_exists('speckl', $GLOBALS)) {
-        $GLOBALS['speckl'] = [];
-    }
-    $GLOBALS['speckl']['currentBlock'] = null;
-    $GLOBALS['speckl']['currentPath'] = null;
-    if (!$GLOBALS['speckl']['blockClass']) {
-        $GLOBALS['speckl']['blockClass'] = Block::class;
+  const SUCCESS_EXIT   = 0;
+  const FAILURE_EXIT   = 1;
+  const EXCEPTION_EXIT = 2;
+
+  public function __construct($files) {
+    $this->files = $files;
+  }
+
+  public function run() {
+    Config::set('currentBlock', null);
+    Config::set('currentPath', null);
+    if (!Config::get('blockClass')) {
+        Config::set('blockClass', Block::class);
     }
     
-    foreach ($files as $filePath) {
-        $GLOBALS['speckl']['currentPath'] = $filePath;
+    foreach ($this->files as $filePath) {
+        Config::set('currentPath', $filePath);
         include $filePath;
     }
+
+    return Runner::SUCCESS_EXIT;
   }
 }

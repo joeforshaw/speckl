@@ -29,4 +29,4 @@ if (count($argv) > 1) {
   $files = rglob(getcwd() . "/specs/*Spec.php");
 }
 
-(new Speckl\Runner())->main($files);
+(new Speckl\Runner($files))->run();
