@@ -9,8 +9,8 @@ trait BlockTrait {
          $scope;
 
   private $type,
-          $beforeEachs,
-          $afterEachs,
+          $beforeCallbacks,
+          $afterCallbacks,
           $runner,
           $body,
           $pending;
@@ -22,8 +22,8 @@ trait BlockTrait {
     $this->setupRelatedBlocks($args['parentBlock']);
     $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
     $this->body = $this->bindScope($args['body']);
-    $this->beforeEachs = $this->parentBlock ? $this->parentBlock->beforeEachs : [];
-    $this->afterEachs = $this->parentBlock ? $this->parentBlock->afterEachs : [];
+    $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
+    $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
     $this->path = $args['path'];
     $this->pending = !!$args['pending'];
   }
@@ -59,23 +59,23 @@ trait BlockTrait {
     return $output . "\n";
   }
 
-  public function addBeforeEach($beforeEach) {
-    array_push($this->beforeEachs, $beforeEach);
+  public function addBeforeCallback($beforeCallback) {
+    array_push($this->beforeCallbacks, $beforeCallback);
   }
 
-  public function runBeforeEachs() {
-    foreach ($this->beforeEachs as $beforeEach) {
-      $beforeEach();
+  public function runBeforeCallbacks() {
+    foreach ($this->beforeCallbacks as $beforeCallback) {
+      $beforeCallback();
     }
   }
 
-  public function addAfterEach($afterEach) {
-    array_push($this->afterEachs, $afterEach);
+  public function addAfterCallbacks($afterCallback) {
+    array_push($this->afterCallbacks, $afterCallback);
   }
 
-  public function runAfterEachs() {
-    foreach ($this->afterEachs as $afterEach) {
-      $afterEach();
+  public function runAfterCallbacks() {
+    foreach ($this->afterCallbacks as $afterCallback) {
+      $afterCallback();
     }
   }
 

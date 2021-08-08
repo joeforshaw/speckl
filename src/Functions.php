@@ -49,11 +49,11 @@ function expect($expectedValue) {
 }
 
 function beforeEach(callable $body) {
-  Config::get('currentBlock')->addBeforeEach($body);
+  Config::get('currentBlock')->addBeforeCallback($body);
 }
 
 function afterEach(callable $body) {
-  Config::get('currentBlock')->addAfterEach($body);
+  Config::get('currentBlock')->addAfterCallback($body);
 }
 
 function sharedContext($label, callable $body) {
@@ -61,7 +61,10 @@ function sharedContext($label, callable $body) {
 }
 
 function includeContext($label) {
-  $sharedContext = Config::get('runner')->getSharedContext($label);
-  $sharedContext = Config::get('currentBlock')->bindScope($sharedContext);
-  call_user_func($sharedContext);
+  $block = Config::get('currentBlock');
+  $block->addBeforeCallback(function() use ($block, $label) {
+    $sharedContext = Config::get('runner')->getSharedContext($label);
+    $sharedContext = $block->bindScope($sharedContext);
+    call_user_func($sharedContext);
+  });
 }

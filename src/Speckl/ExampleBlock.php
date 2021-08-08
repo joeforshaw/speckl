@@ -10,13 +10,13 @@ class ExampleBlock extends Block {
     }
 
     try {
-      $this->runBeforeEachs();
+      $this->runBeforeCallbacks();
       $this->runBody();
       echo "\033[32m" . $this->indentedLabel() . "\033[0m";
     } catch (TestFailure $failure) {
       echo "\033[01;31m" . $this->indentedLabel() . "\033[0m";
     } finally {
-      $this->runAfterEachs();
+      $this->runAfterCallbacks();
     }
   }
 }
