@@ -2,7 +2,6 @@
 
 use Speckl\Config;
 use Speckl\Expectation;
-use Speckl\GroupBlock;
 
 function group($args) {
   $args = array_merge($args, [
