@@ -24,4 +24,8 @@ trait ScopeTrait {
       return $this->parentScope->$property;
     }
   }
+
+  // Intentionally empty to allow extension
+  public function beforeCallback() {}
+  public function afterCallback() {}
 }

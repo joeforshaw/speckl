@@ -22,15 +22,23 @@ trait BlockTrait {
   public function initialise($args) {
     $this->type = $args['type'];
     $this->label = $args['label'];
+    $this->path = $args['path'];
+    $this->pending = array_key_exists('pending', $args) ? $args['pending'] : false;
+
     $this->childBlocks = [];
     $this->setupRelatedBlocks($args['parentBlock']);
+    $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
+    $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
     $scopeClass = Config::get('scopeClass');
     $this->scope = new $scopeClass($this->parentBlock ? $this->parentBlock->scope : null);
     $this->body = $this->bindScope($args['body']);
-    $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
-    $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
-    $this->path = $args['path'];
-    $this->pending = array_key_exists('pending', $args) ? $args['pending'] : false;
+    
+    $this->addBeforeCallback(function() {
+      $this->scope->beforeCallback();
+    });
+    $this->addAfterCallback(function() {
+      $this->scope->afterCallback();
+    });
   }
 
   public function runBody() {
@@ -65,7 +73,7 @@ trait BlockTrait {
   }
 
   public function addBeforeCallback($beforeCallback) {
-    array_push($this->beforeCallbacks, $this->bindScope($beforeCallback));
+    array_push($this->beforeCallbacks, $beforeCallback);
   }
 
   public function runBeforeCallbacks() {
@@ -75,7 +83,7 @@ trait BlockTrait {
   }
 
   public function addAfterCallback($afterCallback) {
-    array_push($this->afterCallbacks, $this->bindScope($afterCallback));
+    array_unshift($this->afterCallbacks, $afterCallback);
   }
 
   public function runAfterCallbacks() {
