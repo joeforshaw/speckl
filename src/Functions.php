@@ -55,3 +55,13 @@ function beforeEach(callable $body) {
 function afterEach(callable $body) {
   Config::get('currentBlock')->addAfterEach($body);
 }
+
+function sharedContext($label, callable $body) {
+  Config::get('runner')->addSharedContext($label, $body);
+}
+
+function includeContext($label) {
+  $sharedContext = Config::get('runner')->getSharedContext($label);
+  $sharedContext = Config::get('currentBlock')->bindScope($sharedContext);
+  call_user_func($sharedContext);
+}

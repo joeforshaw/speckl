@@ -21,7 +21,7 @@ trait BlockTrait {
     $this->childBlocks = [];
     $this->setupRelatedBlocks($args['parentBlock']);
     $this->scope = new Scope($this->parentBlock ? $this->parentBlock->scope : null);
-    $this->body = $args['body']->bindTo($this->scope);
+    $this->body = $this->bindScope($args['body']);
     $this->beforeEachs = $this->parentBlock ? $this->parentBlock->beforeEachs : [];
     $this->afterEachs = $this->parentBlock ? $this->parentBlock->afterEachs : [];
     $this->path = $args['path'];
@@ -41,6 +41,10 @@ trait BlockTrait {
 
   public function addChildBlock($childBlock) {
     array_push($this->childBlocks, $childBlock);
+  }
+
+  public function bindScope($body) {
+    return $body->bindTo($this->scope);
   }
 
   public function indentedLabel() {

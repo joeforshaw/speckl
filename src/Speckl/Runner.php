@@ -9,11 +9,14 @@ class Runner {
   const FAILURE_EXIT   = 1;
   const EXCEPTION_EXIT = 2;
 
-  private $files, $blocks;
+  private $files,
+          $blocks,
+          $sharedContexts;
 
   public function __construct($files) {
     $this->files = $files;
     $this->blocks = [];
+    $this->sharedContexts = [];
   }
 
   public function run() {
@@ -38,7 +41,15 @@ class Runner {
     return Runner::SUCCESS_EXIT;
   }
 
-  public function registerBlock($block) {
+  public function addBlock($block) {
     array_push($this->blocks, $block);
+  }
+
+  public function addSharedContext($label, $body) {
+    $this->sharedContexts[$label] = $body;
+  }
+
+  public function getSharedContext($label) {
+    return $this->sharedContexts[$label];
   }
 }
