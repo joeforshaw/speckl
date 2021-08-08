@@ -27,10 +27,11 @@ if (count($argv) > 1) {
   $files = array_slice($argv, 1);
 } else {
   $files = rglob(getcwd() . "/specs/*Spec.php");
-  $files = array_merge(
-    $files, 
-    rglob(getcwd() . "/specs/*SharedContext.php")
-  );
 }
+
+$files = array_merge(
+  $files, 
+  rglob(getcwd() . "/specs/*SharedContext.php")
+);
 
 (new Speckl\Runner($files))->run();
