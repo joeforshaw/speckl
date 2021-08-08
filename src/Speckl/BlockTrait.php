@@ -15,6 +15,10 @@ trait BlockTrait {
           $body,
           $pending;
 
+  public function __construct($args) {
+    $this->initialise($args);
+  }
+
   public function initialise($args) {
     $this->type = $args['type'];
     $this->label = $args['label'];
