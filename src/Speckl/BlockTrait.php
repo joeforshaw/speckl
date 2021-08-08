@@ -6,11 +6,11 @@ trait BlockTrait {
   public $path,
          $childBlocks,
          $parentBlock,
-         $scope;
+         $scope,
+         $beforeCallbacks,
+         $afterCallbacks;
 
   private $type,
-          $beforeCallbacks,
-          $afterCallbacks,
           $runner,
           $body,
           $pending;
