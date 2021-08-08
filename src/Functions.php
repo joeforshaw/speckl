@@ -4,9 +4,10 @@ use Speckl\Config;
 use Speckl\Expectation;
 use Speckl\TestFailure;
 
-function describe($label, callable $body) {
+function group($type, $label, callable $body) {
   $blockClass = Config::get('blockClass');
   $block = new $blockClass([
+    'type' => $type,
     'label' => $label,
     'body' => $body,
     'runner' => Config::get('runner'),
@@ -19,28 +20,32 @@ function describe($label, callable $body) {
   Config::set('currentBlock', $block->parentBlock);
 }
 
+function describe($label, callable $body) {
+  group('describe', $label, $body);
+}
+
 function scenario($label, callable $body) {
-  describe($label, $body);
+  group('scenario', $label, $body);
 }
 
 function context($label, callable $body) {
-  describe($label, $body);
+  group('context', $label, $body);
 }
 
-function it($label, callable $body) {
+function example($args) {
   $blockClass = Config::get('blockClass');
-  $block = new $blockClass([
-    'label' => $label,
-    'body' => $body,
+  $block = new $blockClass(array_merge($args, [
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
-  ]);
+  ]));
   Config::set('currentBlock', $block);
 
   try {
     $block->callBeforeEachs();
-    $block->callBody();
-    echo "\033[32m" . $block->indentedLabel() . "\033[0m";
+    if (!$block->isPending()) {
+      $block->callBody();
+    }
+    echo $block->labelColorCode() . $block->indentedLabel() . "\033[0m";
   } catch (TestFailure $failure) {
     echo "\033[01;31m" . $block->indentedLabel() . "\033[0m";
   } finally {
@@ -49,16 +54,21 @@ function it($label, callable $body) {
   Config::set('currentBlock', $block->parentBlock);
 }
 
+function it($label, callable $body) {
+  example([
+    'type' => 'it',
+    'label' => $label,
+    'body' => $body
+  ]);
+}
+
 function xit($label, callable $body) {
-  $blockClass = Config::get('blockClass');
-  $block = new $blockClass([
+  example([
+    'type' => 'it',
     'label' => $label,
     'body' => $body,
-    'parentBlock' => Config::get('currentBlock'),
-    'path' => Config::get('currentPath'),
     'pending' => true
   ]);
-  echo "\033[33m" . $block->indentedLabel() . "\033[0m";
 }
 
 function expect($expectedValue) {
@@ -72,4 +82,3 @@ function beforeEach(callable $body) {
 function afterEach(callable $body) {
   Config::get('currentBlock')->addAfterEach($body);
 }
-  
