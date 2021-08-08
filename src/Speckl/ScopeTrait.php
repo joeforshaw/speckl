@@ -1,0 +1,27 @@
+<?php
+
+namespace Speckl;
+
+trait ScopeTrait {
+  private $parentScope;
+
+  public function __construct($parentScope) {
+    $this->parentScope = $parentScope;
+  }
+
+  public function __call($name, $arguments) {
+    if (is_callable($this->$name)) {
+      return call_user_func_array($this->$name, $arguments);
+    }
+  }
+
+  // Adopts a decorator pattern, wrapping the parent's scope
+  public function __get($property) {
+    if (property_exists($this, $property)) {
+      return $this->$property;
+    }
+    if ($this->parentScope) {
+      return $this->parentScope->$property;
+    }
+  }
+}
