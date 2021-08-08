@@ -63,8 +63,13 @@ function sharedContext($label, callable $body) {
 function includeContext($label) {
   $block = Config::get('currentBlock');
   $block->addBeforeCallback(function() use ($block, $label) {
+    $block->scope->beforeCallback();
     $sharedContext = Config::get('runner')->getSharedContext($label);
     $sharedContext = $block->bindScope($sharedContext);
     call_user_func($sharedContext);
+  });
+
+  $block->addAfterCallback(function() use ($block) {
+    $block->scope->afterCallback();
   });
 }
