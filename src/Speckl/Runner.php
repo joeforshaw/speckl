@@ -23,8 +23,11 @@ class Runner {
     Config::set('runner', $this);
     Config::set('currentBlock', null);
     Config::set('currentPath', null);
-    if (!Config::get('blockClass')) {
-      Config::set('blockClass', ExampleBlock::class);
+    if (!Config::get('groupBlockClass')) {
+      Config::set('groupBlockClass', GroupBlock::class);
+    }
+    if (!Config::get('exampleBlockClass')) {
+      Config::set('exampleBlockClass', ExampleBlock::class);
     }
 
     // Load the spec tree

@@ -9,7 +9,8 @@ function group($args) {
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
   ]);
-  $block = new GroupBlock($args);
+  $groupBlockClass = Config::get('groupBlockClass');
+  $block = new $groupBlockClass($args);
   Config::set('currentBlock', $block);
   $block->loadBlock();
   Config::set('currentBlock', $block->parentBlock);
@@ -20,8 +21,8 @@ function example($args) {
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
   ]);
-  $blockClass = Config::get('blockClass');
-  new $blockClass($args);
+  $exampleBlockClass = Config::get('exampleBlockClass');
+  new $exampleBlockClass($args);
 }
 
 function describe($label, callable $body) {
