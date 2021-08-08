@@ -87,7 +87,7 @@ trait BlockTrait {
     return $this->pending;
   }
 
-  protected function indentation() {
+  public function indentation() {
     if (!$this->parentBlock) {
       return 0;
     }
