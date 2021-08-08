@@ -2,19 +2,6 @@
 
 namespace Speckl;
 
-class GroupBlock extends Block {
-  public function loadBlock() {
-    if ($this->isRootBlock()) {
-      $this->runner = Config::get('runner');
-      $this->runner->addBlock($this);
-    }
-    $this->runBody();
-  }
-
-  public function runBlock() {
-    echo $this->indentedLabel();
-    foreach ($this->childBlocks as $block) {
-      $block->runBlock();
-    }
-  }
+class GroupBlock extends Block implements LoadableBlock {
+  use GroupBlockTrait;
 }
