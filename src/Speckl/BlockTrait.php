@@ -26,13 +26,9 @@ trait BlockTrait {
     $this->afterEachs = $this->parentBlock ? $this->parentBlock->afterEachs : [];
     $this->path = $args['path'];
     $this->pending = !!$args['pending'];
-    if ($this->isRootBlock()) {
-      $this->runner = $args['runner'];
-      $this->runner->registerBlock($this);
-    }
   }
 
-  public function callBody() {
+  public function runBody() {
     call_user_func($this->body);
   }
 
@@ -59,18 +55,11 @@ trait BlockTrait {
     return $output . "\n";
   }
 
-  public function labelColorCode() {
-    if ($this->isPending()) {
-      return "\033[33m" ; // Yellow
-    }
-    return "\033[32m"; // Green
-  }
-
   public function addBeforeEach($beforeEach) {
     array_push($this->beforeEachs, $beforeEach);
   }
 
-  public function callBeforeEachs() {
+  public function runBeforeEachs() {
     foreach ($this->beforeEachs as $beforeEach) {
       $beforeEach();
     }
@@ -80,7 +69,7 @@ trait BlockTrait {
     array_push($this->afterEachs, $afterEach);
   }
 
-  public function callAfterEachs() {
+  public function runAfterEachs() {
     foreach ($this->afterEachs as $afterEach) {
       $afterEach();
     }

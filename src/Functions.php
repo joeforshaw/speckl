@@ -2,73 +2,46 @@
 
 use Speckl\Config;
 use Speckl\Expectation;
-use Speckl\TestFailure;
+use Speckl\GroupBlock;
 
-function group($type, $label, callable $body) {
-  $blockClass = Config::get('blockClass');
-  $block = new $blockClass([
-    'type' => $type,
-    'label' => $label,
-    'body' => $body,
-    'runner' => Config::get('runner'),
+function group($args) {
+  $args = array_merge($args, [
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
   ]);
+  $block = new GroupBlock($args);
   Config::set('currentBlock', $block);
-  echo $block->indentedLabel();
-  $block->callBody();
+  $block->loadBlock();
   Config::set('currentBlock', $block->parentBlock);
-}
-
-function describe($label, callable $body) {
-  group('describe', $label, $body);
-}
-
-function scenario($label, callable $body) {
-  group('scenario', $label, $body);
-}
-
-function context($label, callable $body) {
-  group('context', $label, $body);
 }
 
 function example($args) {
-  $blockClass = Config::get('blockClass');
-  $block = new $blockClass(array_merge($args, [
+  $args = array_merge($args, [
     'parentBlock' => Config::get('currentBlock'),
     'path' => Config::get('currentPath')
-  ]));
-  Config::set('currentBlock', $block);
+  ]);
+  $blockClass = Config::get('blockClass');
+  new $blockClass($args);
+}
 
-  try {
-    $block->callBeforeEachs();
-    if (!$block->isPending()) {
-      $block->callBody();
-    }
-    echo $block->labelColorCode() . $block->indentedLabel() . "\033[0m";
-  } catch (TestFailure $failure) {
-    echo "\033[01;31m" . $block->indentedLabel() . "\033[0m";
-  } finally {
-    $block->callAfterEachs();
-  }
-  Config::set('currentBlock', $block->parentBlock);
+function describe($label, callable $body) {
+  group(['type' => 'describe', 'label' => $label, 'body' => $body]);
+}
+
+function context($label, callable $body) {
+  group(['type' => 'context', 'label' => $label, 'body' => $body]);
 }
 
 function it($label, callable $body) {
-  example([
-    'type' => 'it',
-    'label' => $label,
-    'body' => $body
-  ]);
+  example(['type' => 'it', 'label' => $label, 'body' => $body]);
 }
 
 function xit($label, callable $body) {
-  example([
-    'type' => 'it',
-    'label' => $label,
-    'body' => $body,
-    'pending' => true
-  ]);
+  example([ 'type' => 'xit', 'label' => $label, 'body' => $body, 'pending' => true]);
+}
+
+function scenario($label, callable $body) {
+  example(['type' => 'scenario', 'label' => $label, 'body' => $body ]);
 }
 
 function expect($expectedValue) {
