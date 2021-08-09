@@ -5,23 +5,14 @@ namespace Speckl;
 use Error;
 
 class ExampleBlock extends Block implements RunnableBlock {
-  public function __construct($args) {
-    parent::__construct($args); 
-    $this->prependBeforeCallback(function() {
-      $this->scope->beforeCallback();
-    });
-    $this->addAfterCallback(function() {
-      $this->scope->afterCallback();
-    });
-  }
-
   public function runBlock() {
     if ($this->isPending()) {
       echo "\033[33m" . $this->indentedLabel() . "\033[0m";
       return;
     }
-
     try {
+      $this->scope->beforeCallback();
+      $this->runSharedContexts($this);
       $this->runBeforeCallbacks();
       $this->runBody();
       echo "\033[32m" . $this->indentedLabel() . "\033[0m";
@@ -32,6 +23,7 @@ class ExampleBlock extends Block implements RunnableBlock {
       die;
     } finally {
       $this->runAfterCallbacks();
+      $this->scope->afterCallback();
     }
   }
 }

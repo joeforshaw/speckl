@@ -27,6 +27,14 @@ trait ScopeTrait {
     }
   }
 
+  public function isRootScope() {
+    return is_null($this->parentScope);
+  }
+
+  public function debug() {
+    return $this->debugLabel;
+  }
+
   // Intentionally empty to allow extension
   public function beforeCallback() {}
   public function afterCallback() {}

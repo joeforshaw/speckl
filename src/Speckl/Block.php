@@ -8,7 +8,8 @@ abstract class Block {
          $parentBlock,
          $scope,
          $beforeCallbacks,
-         $afterCallbacks;
+         $afterCallbacks,
+         $sharedContexts;
 
   private $type,
           $body,
@@ -24,6 +25,7 @@ abstract class Block {
     $this->setupRelatedBlocks($args['parentBlock']);
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
+    $this->sharedContexts = [];
     $this->scope = $this->setupScope(Config::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
   }
@@ -76,7 +78,8 @@ abstract class Block {
 
   public function runBeforeCallbacks() {
     foreach ($this->beforeCallbacks as $beforeCallback) {
-      $beforeCallback();
+      $beforeCallback = $this->bindScope($beforeCallback);
+      call_user_func($beforeCallback);
     }
   }
 
@@ -86,7 +89,8 @@ abstract class Block {
 
   public function runAfterCallbacks() {
     foreach ($this->afterCallbacks as $afterCallback) {
-      $afterCallback();
+      $afterCallback = $this->bindScope($afterCallback);
+      call_user_func($afterCallback);
     }
   }
 
@@ -103,5 +107,19 @@ abstract class Block {
       return 0;
     }
     return $this->parentBlock->indentation() + 2;
+  }
+
+  public function addSharedContext(callable $sharedContext) {
+    array_push($this->sharedContexts, $sharedContext);
+  }
+
+  public function runSharedContexts($block) {
+    if ($this->parentBlock) {
+      $this->parentBlock->runSharedContexts($block);
+    }
+    foreach ($this->sharedContexts as $sharedContext) {
+      $sharedContext = $block->bindScope($sharedContext);
+      call_user_func_array($sharedContext, [$block]);
+    }
   }
 }
