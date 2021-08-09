@@ -12,6 +12,7 @@ class ExampleBlock extends Block implements RunnableBlock {
     }
     try {
       $this->scope->beforeCallback();
+      $this->scope->bindCallables($this->scope);
       $this->runSharedContexts($this);
       $this->runBeforeCallbacks();
       $this->runBody();

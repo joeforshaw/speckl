@@ -4,11 +4,12 @@ namespace Speckl;
 
 trait ScopeTrait {
   public $debugLabel;
-  private $parentScope;
+  private $parentScope, $callables;
 
   public function __construct($debugLabel, $parentScope) {
     $this->debugLabel = $debugLabel;
     $this->parentScope = $parentScope;
+    $this->callables = [];
   }
 
   public function __call($name, $arguments) {
@@ -24,6 +25,22 @@ trait ScopeTrait {
     }
     if ($this->parentScope) {
       return $this->parentScope->$property;
+    }
+  }
+
+  public function __set($name, $value) {
+    if (is_callable($value)) {
+      $this->callables[$name] = $value;
+    }
+    $this->$name = $value;
+  }
+
+  public function bindCallables($scope) {
+    if ($this->parentScope) {
+      $this->parentScope->bindCallables($scope);
+    }
+    foreach ($this->callables as $name => $callable) {
+      $this->$name = $callable->bindTo($scope, $scope);
     }
   }
 

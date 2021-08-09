@@ -13,7 +13,11 @@ describe('Scope', function() {
     expect($this->exampleCallableProperty())->to->equal('Callable property output');
   });
 
-  it('binds itself to callable properties', function() {
-    expect($this->boundExampleCallableProperty())->to->equal('This a property defined within this scope');
+  context('when a existing scope variable is redefined', function() {
+    $this->propertyInScope = 'This a property redefined within this scope';
+
+    it('reflects the new value', function() {
+      expect($this->boundExampleCallableProperty())->to->equal('This a property redefined within this scope');
+    });
   });
 });
