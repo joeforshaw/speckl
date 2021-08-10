@@ -14,6 +14,9 @@
         "psr-4": {
             "Speckl\\": "src/Speckl"
         },
-        "files": ["src/Functions.php"]
+        "files": [
+            "src/Config.php",
+            "src/Functions.php"
+        ]
     }
 }

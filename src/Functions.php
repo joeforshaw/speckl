@@ -1,26 +1,26 @@
 <?php
 
-use Speckl\Config;
+use Speckl\Container;
 use Speckl\Expectation;
 
 function group($args) {
   $args = array_merge($args, [
-    'parentBlock' => Config::get('currentBlock'),
-    'path' => Config::get('currentPath')
+    'parentBlock' => Container::get('currentBlock'),
+    'path' => Container::get('currentPath')
   ]);
-  $groupBlockClass = Config::get('groupBlockClass');
+  $groupBlockClass = Container::get('groupBlockClass');
   $block = new $groupBlockClass($args);
-  Config::set('currentBlock', $block);
+  Container::set('currentBlock', $block);
   $block->loadBlock();
-  Config::set('currentBlock', $block->parentBlock);
+  Container::set('currentBlock', $block->parentBlock);
 }
 
 function example($args) {
   $args = array_merge($args, [
-    'parentBlock' => Config::get('currentBlock'),
-    'path' => Config::get('currentPath')
+    'parentBlock' => Container::get('currentBlock'),
+    'path' => Container::get('currentPath')
   ]);
-  $exampleBlockClass = Config::get('exampleBlockClass');
+  $exampleBlockClass = Container::get('exampleBlockClass');
   new $exampleBlockClass($args);
 }
 
@@ -49,21 +49,21 @@ function expect($expectedValue) {
 }
 
 function beforeEach(callable $body) {
-  Config::get('currentBlock')->addBeforeCallback($body);
+  Container::get('currentBlock')->addBeforeCallback($body);
 }
 
 function afterEach(callable $body) {
-  Config::get('currentBlock')->addAfterCallback($body);
+  Container::get('currentBlock')->addAfterCallback($body);
 }
 
 function sharedContext($label, callable $body) {
-  Config::get('runner')->addSharedContext($label, $body);
+  Container::get('runner')->addSharedContext($label, $body);
 }
 
 function includeContext($label) {
-  $currentBlock = Config::get('currentBlock');
+  $currentBlock = Container::get('currentBlock');
   $currentBlock->addSharedContext(function($block) use ($label) {
-    $sharedContext = Config::get('runner')->getSharedContext($label);
+    $sharedContext = Container::get('runner')->getSharedContext($label);
     $sharedContext = $block->bindScope($sharedContext);
     call_user_func_array($sharedContext, [$block]);
   });

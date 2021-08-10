@@ -5,7 +5,7 @@ namespace Speckl;
 class GroupBlock extends Block implements LoadableBlock, RunnableBlock {
   public function loadBlock() {
     if ($this->isRootBlock()) {
-      $this->runner = Config::get('runner');
+      $this->runner = Container::get('runner');
       $this->runner->addBlock($this);
     }
     $this->runBody();

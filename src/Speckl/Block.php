@@ -26,7 +26,7 @@ abstract class Block {
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
     $this->sharedContexts = [];
-    $this->scope = $this->setupScope(Config::get('scopeClass'));
+    $this->scope = $this->setupScope(Container::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
   }
 

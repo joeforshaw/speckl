@@ -20,22 +20,11 @@ class Runner {
   }
 
   public function run() {
-    Config::set('runner', $this);
-    Config::set('currentBlock', null);
-    Config::set('currentPath', null);
-    if (!Config::get('groupBlockClass')) {
-      Config::set('groupBlockClass', GroupBlock::class);
-    }
-    if (!Config::get('exampleBlockClass')) {
-      Config::set('exampleBlockClass', ExampleBlock::class);
-    }
-    if (!Config::get('scopeClass')) {
-      Config::set('scopeClass', Scope::class);
-    }
+    Container::set('runner', $this);
 
     // Load the spec tree
     foreach ($this->files as $filePath) {
-      Config::set('currentPath', $filePath);
+      Container::set('currentPath', $filePath);
       require_once $filePath;
     }
 
