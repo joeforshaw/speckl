@@ -24,7 +24,6 @@ class Runner {
 
     // Load the spec tree
     foreach ($this->files as $filePath) {
-      Container::set('currentPath', $filePath);
       require_once $filePath;
     }
 

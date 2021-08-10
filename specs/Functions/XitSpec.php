@@ -1,6 +1,6 @@
 <?php
 
-describe('an xit block', function() {
+describe('An xit block', function() {
   xit('renders the label yellow', function() {
     expect(true)->to->beFalse(); // This shouldn't run
   });

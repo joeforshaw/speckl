@@ -8,7 +8,6 @@ use Speckl\Scope;
 
 Container::setDefault('runner', null);
 Container::setDefault('currentBlock', null);
-Container::setDefault('currentPath', null);
 Container::setDefault('groupBlockClass', GroupBlock::class);
 Container::setDefault('exampleBlockClass', ExampleBlock::class);
 Container::setDefault('scopeClass', Scope::class);

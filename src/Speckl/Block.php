@@ -2,14 +2,16 @@
 
 namespace Speckl;
 
+use ReflectionFunction;
+
 abstract class Block {
-  public $path,
-         $childBlocks,
+  public $childBlocks,
          $parentBlock,
          $scope,
          $beforeCallbacks,
          $afterCallbacks,
-         $sharedContexts;
+         $sharedContexts,
+         $lineNumbers;
 
   private $type,
           $body,
@@ -18,8 +20,8 @@ abstract class Block {
   public function __construct($args) {
     $this->type = $args['type'];
     $this->label = $args['label'];
-    $this->path = $args['path'];
     $this->pending = array_key_exists('pending', $args) ? $args['pending'] : false;
+    $this->lineNumbers = $args['lineNumbers'];
 
     $this->childBlocks = [];
     $this->setupRelatedBlocks($args['parentBlock']);
@@ -28,6 +30,7 @@ abstract class Block {
     $this->sharedContexts = [];
     $this->scope = $this->setupScope(Container::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
+    $this->bodyData = new ReflectionFunction($this->body);
   }
 
   public function setupScope($scopeClass) {
@@ -121,5 +124,34 @@ abstract class Block {
       $sharedContext = $block->bindScope($sharedContext);
       call_user_func_array($sharedContext, [$block]);
     }
+  }
+
+  public function filePath() {
+    return $this->bodyData->getFileName();
+  }
+
+  public function startLineNumber() {
+    return $this->bodyData->getStartLine();
+  }
+
+  public function endLineNumber() {
+    return $this->bodyData->getStartLine();
+  }
+
+  public function sentencePart() {
+    if ($this->type === 'context') {
+      return ', ' . $this->label . ',';
+    }
+    return $this->label;
+  }
+
+  public function sentence() {
+    $block = $this->parentBlock;
+    $output = $this->label;
+    while(!is_null($block)) {
+      $output = $block->sentencePart() . ' ' . $output;
+      $block = $block->parentBlock;
+    }
+    return ucfirst($output);
   }
 }

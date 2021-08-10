@@ -5,8 +5,9 @@ namespace Speckl;
 use Exception;
 
 class Constraint {
-  public function __construct($actual, $negated) {
-    $this->actual = $actual;
+  public function __construct($expectation, $negated) {
+    $this->expectation = $expectation;
+    $this->actual = $this->expectation->actual;
     $this->negated = $negated;
   }
 
@@ -74,7 +75,9 @@ class Constraint {
     $this->expected = $exp;
     if ($this->negated) { $boolean = !$boolean; }
     if (!$boolean) {
-      throw new TestFailure($this->failureMessage());
+      $failure = new TestFailure($this->failureMessage());
+      $failure->constraint = $this;
+      throw $failure;
     }
   }
 

@@ -3,9 +3,9 @@
 namespace Speckl;
 
 class FailHandler {
-  public function handle($throwable) {
+  public function handle(Block $block, $throwable) {
     $fails = Container::get('fails');
-    array_push($fails, $throwable);
+    array_push($fails, new TestFailureFormatter($block, $throwable));
     Container::set('fails', $fails);
   }
 
@@ -14,10 +14,10 @@ class FailHandler {
   }
 
   public function outputFails() {
-    echo "-------------------------------------------------------\n";
-    foreach (Container::get('fails') as $fail) {
-      echo $fail->getMessage() . "\n";
+    echo "\n\033[01;31m";
+    foreach (Container::get('fails') as $i => $fail) {
+      echo $fail->output($i) . "\n";
     }
-    echo "-------------------------------------------------------\n";
+    echo "\033[0m";
   }
 }

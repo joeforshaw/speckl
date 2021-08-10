@@ -1,6 +1,6 @@
 <?php
 
-describe('a sharedContext block', function() {
+describe('A sharedContext block', function() {
   context('when defined in the same file', function() {
     includeContext('shared context from the same file');
 

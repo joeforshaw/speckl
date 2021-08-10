@@ -32,6 +32,6 @@ class ExampleBlock extends Block implements RunnableBlock {
 
   private function handle($throwable) {
     $failHandlerClass = Container::get('failHandlerClass');
-    (new $failHandlerClass())->handle($throwable);
+    (new $failHandlerClass())->handle($this, $throwable);
   }
 }

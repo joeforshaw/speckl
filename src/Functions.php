@@ -6,7 +6,6 @@ use Speckl\Expectation;
 function group($args) {
   $args = array_merge($args, [
     'parentBlock' => Container::get('currentBlock'),
-    'path' => Container::get('currentPath')
   ]);
   $groupBlockClass = Container::get('groupBlockClass');
   $block = new $groupBlockClass($args);
@@ -18,34 +17,55 @@ function group($args) {
 function example($args) {
   $args = array_merge($args, [
     'parentBlock' => Container::get('currentBlock'),
-    'path' => Container::get('currentPath')
   ]);
   $exampleBlockClass = Container::get('exampleBlockClass');
   new $exampleBlockClass($args);
 }
 
 function describe($label, callable $body) {
-  group(['type' => 'describe', 'label' => $label, 'body' => $body]);
+  group([
+    'type' => 'describe',
+    'label' => $label,
+    'body' => $body,
+  ]);
 }
 
 function context($label, callable $body) {
-  group(['type' => 'context', 'label' => $label, 'body' => $body]);
+  group([
+    'type' => 'context',
+    'label' => $label,
+    'body' => $body,
+  ]);
 }
 
 function it($label, callable $body) {
-  example(['type' => 'it', 'label' => $label, 'body' => $body]);
+  example([
+    'type' => 'it',
+    'label' => $label,
+    'body' => $body,
+  ]);
 }
 
 function xit($label, callable $body) {
-  example([ 'type' => 'xit', 'label' => $label, 'body' => $body, 'pending' => true]);
+  example([
+    'type' => 'xit',
+    'label' => $label,
+    'body' => $body,
+    'pending' => true
+  ]);
 }
 
 function scenario($label, callable $body) {
-  example(['type' => 'scenario', 'label' => $label, 'body' => $body ]);
+  example([
+    'type' => 'scenario',
+    'label' => $label,
+    'body' => $body,
+  ]);
 }
 
 function expect($expectedValue) {
-  return new Expectation($expectedValue);
+  $lineNumber = debug_backtrace()[0]['line'];
+  return new Expectation($expectedValue, $lineNumber);
 }
 
 function beforeEach(callable $body) {
