@@ -18,8 +18,13 @@ class Container {
   }
 
   public static function setDefault($key, $value) {
-    if (!static::get($key)) {
+    if (!static::exists($key)) {
       static::set($key, $value);
     }
+  }
+
+  public static function exists($key) {
+    return array_key_exists('speckl', $GLOBALS)
+        && array_key_exists($key, $GLOBALS['speckl']);
   }
 }
