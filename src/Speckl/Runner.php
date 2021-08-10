@@ -33,6 +33,13 @@ class Runner {
       $block->runBlock();
     }
 
+    // Output fails
+    $failHandlerClass = Container::get('failHandlerClass');
+    $failHandler = new $failHandlerClass();
+    if ($failHandler->anyFails()) {
+      $failHandler->outputFails();
+    }
+
     return Runner::SUCCESS_EXIT;
   }
 

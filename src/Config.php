@@ -13,3 +13,4 @@ Container::setDefault('groupBlockClass', GroupBlock::class);
 Container::setDefault('exampleBlockClass', ExampleBlock::class);
 Container::setDefault('scopeClass', Scope::class);
 Container::setDefault('failHandlerClass', FailHandler::class);
+Container::setDefault('fails', []);
