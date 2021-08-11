@@ -1,7 +1,7 @@
 <?php
 
 use Speckl\Constraint;
-use Speckl\Failure;
+use Speckl\Exceptions\Failure;
 
 describe(Constraint::class, function() {
   describe('#fail', function() {

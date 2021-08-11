@@ -1,6 +1,6 @@
 <?php
 
-namespace Speckl;
+namespace Speckl\Exceptions;
 
 class Failure extends \Exception {
   public $constraint;

@@ -2,6 +2,8 @@
 
 namespace Speckl;
 
+use Speckl\Exceptions\Failure;
+
 class FailureFormatter {
   public function __construct(Block $block, $throwable = null) {
     $this->block = $block;
