@@ -59,14 +59,22 @@ abstract class Block {
     return $body->bindTo($this->scope, $this->scope);
   }
 
-  public function indentedLabel() {
+  public function indentationString() {
     $output = '';
     for ($i = 0; $i < $this->indentation(); $i++) {
       $output .= ' ';
     }
+    return $output;
+  }
+
+  public function indentedLabel($colour = null) {
+    $output = $this->indentationString();
     $output .= $this->label;
     if ($this->pending) {
       $output .= ' (pending)';
+    }
+    if ($colour) {
+      $output = $colour . $output . "\033[0m";
     }
     return $output . "\n";
   }
@@ -127,7 +135,10 @@ abstract class Block {
   }
 
   public function filePath() {
-    return $this->bodyData->getFileName();
+    return substr(
+      $this->bodyData->getFileName(),
+      strlen(getcwd()) + 1 // +1 removes the slash at the start
+    );
   }
 
   public function startLineNumber() {

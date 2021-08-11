@@ -8,7 +8,7 @@ use Exception;
 class ExampleBlock extends Block implements RunnableBlock {
   public function runBlock() {
     if ($this->isPending()) {
-      echo "\033[33m" . $this->indentedLabel() . "\033[0m";
+      echo $this->indentedLabel("\033[33m");
       return;
     }
     try {
@@ -17,13 +17,13 @@ class ExampleBlock extends Block implements RunnableBlock {
       $this->runSharedContexts($this);
       $this->runBeforeCallbacks();
       $this->runBody();
-      echo "\033[32m" . $this->indentedLabel() . "\033[0m";
+      echo $this->indentedLabel("\033[32m");
     } catch (Exception $exception) {
       $this->handle($exception);
-      echo "\033[01;31m" . $this->indentedLabel() . "\033[0m";
+      echo $this->indentedLabel("\033[01;31m");
     } catch (Error $error) {
       $this->handle($error);
-      echo "\033[01;31m" . $this->indentedLabel() . "\033[0m";
+      echo $this->indentedLabel("\033[01;31m");
     } finally {
       $this->runAfterCallbacks();
       $this->scope->afterCallback();
