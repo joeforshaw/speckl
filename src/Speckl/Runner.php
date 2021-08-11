@@ -39,9 +39,14 @@ class Runner {
     $failHandler = new $failureHandlerClass();
     if ($failHandler->anyFails()) {
       $failHandler->outputFails();
+      $exitCode = Runner::FAILURE_EXIT;
+    } else {
+      $exitCode = Runner::SUCCESS_EXIT;
     }
 
-    return Runner::SUCCESS_EXIT;
+    $this->outputStats();
+
+    return $exitCode;
   }
 
   public function addBlock($block) {
@@ -62,5 +67,18 @@ class Runner {
       return [$parts[0], intval($parts[1])];
     }
     return [$filePath];
+  }
+
+  public function outputStats() {
+    $output = "\n" . Container::get('totalCount') . " examples";
+    if (Container::get('pendingCount')) {
+      $output .= ", \033[33m" . Container::get('pendingCount') . " pending\033[0m";
+    }
+    if (Container::get('failureCount')) {
+      $output .= ", \033[01;31m" . Container::get('failureCount') . " failed\033[0m";
+    } else {
+      $output .= ', 0 failed';
+    }
+    echo $output . "\n\n";
   }
 }
