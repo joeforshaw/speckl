@@ -2,8 +2,6 @@
 
 namespace Speckl;
 
-use Speckl\Config;
-
 class Runner {
   const SUCCESS_EXIT   = 0;
   const FAILURE_EXIT   = 1;
