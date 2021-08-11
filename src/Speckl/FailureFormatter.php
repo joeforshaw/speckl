@@ -15,11 +15,11 @@ class FailureFormatter {
       if ($this->throwable instanceof Failure) {
         $expectation = $this->throwable->constraint->expectation;
         $output .= $this->throwable->getMessage() . "\n\n";
-        $output .= $this->block->filePath() . ':' . $expectation->lineNumber . "\n";
+        $output .= $this->block->filePath() . ':' . $expectation->lineNumber;
       } else {
         $output .= $this->throwable;
       }
     }
-    return $output;
+    return $output . "\n";
   }
 }

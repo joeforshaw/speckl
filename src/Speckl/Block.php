@@ -160,7 +160,9 @@ abstract class Block {
     $block = $this->parentBlock;
     $output = $this->label;
     while(!is_null($block)) {
-      $output = $block->sentencePart() . ' ' . $output;
+      $output = $block->sentencePart()
+        . (substr($output, 0, 1) === ',' ? '' : ' ')
+        . $output;
       $block = $block->parentBlock;
     }
     return ucfirst($output);

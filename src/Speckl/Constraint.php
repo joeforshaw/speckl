@@ -28,7 +28,7 @@ class Constraint {
   public function theSameSizeAs($exp) { $this->check(count($this->actual) === count($exp), 'length of ' . count($exp)); }
   public function beTheSameSizeAs($exp) { $this->theSameSizeAs($exp); }
 
-  public function AnInstanceOf($class) { $this->check($this->actual instanceof $class, $class); }
+  public function AnInstanceOf($class) { $this->check($this->actual instanceof $class, "an instance of $class"); }
   public function beAnInstanceOf($class) { $this->AnInstanceOf($class); }
 
   public function equal($exp) { $this->check($this->actual === $exp, $exp); }
@@ -82,7 +82,11 @@ class Constraint {
   }
 
   private function failureMessage() {
-    return 'Expected: ' . var_export($this->expected, true) . "\n" .
+    $expected = is_string($this->expected)
+      ? $this->expected
+      : var_export($this->expected, true);
+
+    return 'Expected: ' . $expected . "\n" .
            'Actual: ' . var_export($this->actual, true);
   }
 }
