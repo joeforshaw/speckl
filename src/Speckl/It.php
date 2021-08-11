@@ -3,5 +3,5 @@
 namespace Speckl;
 
 class It implements Block {
-  use ExampleBlockTrait;
+  use Example;
 }

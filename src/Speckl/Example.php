@@ -6,7 +6,7 @@ use Error;
 use Exception;
 use ReflectionClass;
 
-trait ExampleBlockTrait {
+trait Example {
   use BlockTrait;
 
   public function loadBlock() {

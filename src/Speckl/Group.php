@@ -2,7 +2,7 @@
 
 namespace Speckl;
 
-trait GroupBlockTrait {
+trait Group {
   use BlockTrait;
 
   public function loadBlock() {

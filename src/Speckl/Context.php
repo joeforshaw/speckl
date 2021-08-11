@@ -3,7 +3,7 @@
 namespace Speckl;
 
 class Context implements Block {
-  use GroupBlockTrait;
+  use Group;
 
   public function sentencePart() {
     return ', ' . $this->label . ',';
