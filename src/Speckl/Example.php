@@ -7,7 +7,7 @@ use Exception;
 use ReflectionClass;
 
 trait Example {
-  use BlockTrait;
+  use Blockish;
 
   public function loadBlock() {
     $this->parentBlock->addChildBlock($this);

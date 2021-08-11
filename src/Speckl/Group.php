@@ -3,7 +3,7 @@
 namespace Speckl;
 
 trait Group {
-  use BlockTrait;
+  use Blockish;
 
   public function loadBlock() {
     if (!$this->containsSelectedLineNumber()) { return; }

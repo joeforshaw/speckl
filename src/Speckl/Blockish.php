@@ -4,7 +4,7 @@ namespace Speckl;
 
 use ReflectionFunction;
 
-trait BlockTrait {
+trait Blockish {
     public $childBlocks,
          $parentBlock,
          $scope,
