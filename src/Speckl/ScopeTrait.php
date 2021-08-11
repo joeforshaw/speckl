@@ -3,13 +3,14 @@
 namespace Speckl;
 
 trait ScopeTrait {
-  public $debugLabel;
-  private $parentScope, $callables;
+  private $__debugLabel,
+          $__parentScope,
+          $__callables;
 
   public function __construct($debugLabel, $parentScope) {
-    $this->debugLabel = $debugLabel;
-    $this->parentScope = $parentScope;
-    $this->callables = [];
+    $this->__debugLabel = $debugLabel;
+    $this->__parentScope = $parentScope;
+    $this->__callables = [];
   }
 
   public function __call($name, $arguments) {
@@ -23,33 +24,33 @@ trait ScopeTrait {
     if (property_exists($this, $property)) {
       return $this->$property;
     }
-    if ($this->parentScope) {
-      return $this->parentScope->$property;
+    if ($this->__parentScope) {
+      return $this->__parentScope->$property;
     }
   }
 
   public function __set($name, $value) {
     if (is_callable($value)) {
-      $this->callables[$name] = $value;
+      $this->__callables[$name] = $value;
     }
     $this->$name = $value;
   }
 
   public function bindCallables($scope) {
-    if ($this->parentScope) {
-      $this->parentScope->bindCallables($scope);
+    if ($this->__parentScope) {
+      $this->__parentScope->bindCallables($scope);
     }
-    foreach ($this->callables as $name => $callable) {
+    foreach ($this->__callables as $name => $callable) {
       $this->$name = $callable->bindTo($scope, $scope);
     }
   }
 
   public function isRootScope() {
-    return is_null($this->parentScope);
+    return is_null($this->__parentScope);
   }
 
   public function debug() {
-    return $this->debugLabel;
+    return $this->__debugLabel;
   }
 
   // Intentionally empty to allow extension
