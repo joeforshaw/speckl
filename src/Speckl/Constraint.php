@@ -3,7 +3,6 @@
 namespace Speckl;
 
 use Exception;
-use Throwable;
 
 class Constraint {
   public function __construct($expectation, $negated) {
@@ -54,32 +53,40 @@ class Constraint {
 
   public function haveKey($key) { $this->check(array_key_exists($key, $this->actual), "have key \"$key\""); }
 
-  public function raiseAn($throwableClass) {
+  // throw() name conflicts, so can only have throwA()
+  public function throwA($expectedThrowableClass = Exception::class) {
+    $expectedMessage = "\"$expectedThrowableClass\" was thrown";
     try {
       call_user_func($this->actual);
-    } catch (Throwable $e) {
-      $this->check(
-        get_class($throwableClass) == $throwableClass,
-        'raises a "$throwableClass"'
-      );
-      return;
+    } catch (Exception $actualException) {
+      return $this->handleThrowable($expectedThrowableClass, $expectedMessage, $actualException);
     }
-    $this->check(false, 'raises a "$throwableClass"');
+    $this->check(false, $expectedMessage);
   }
-  public function raiseAnException() { $this->raiseAn(Exception::class); }
+  public function throwAn() { $this->throwA(Exception::class); }
+  public function throwException() { $this->throwA(Exception::class); }
+  public function throwAnException() { $this->throwException(); }
+  public function raise($throwableClass) { $this->throwA($throwableClass); }
+  public function raiseA($throwableClass) { $this->throwA($throwableClass); }
+  public function raiseAn($throwableClass) { $this->throwA($throwableClass); }
+  public function raiseAnException() { $this->throwException(); }
 
   public function fail() {
     try {
       call_user_func($this->actual);
     } catch (Failure $failure) {
-      $this->check(true, "test fail");
-      return;
+      $this->actualMessage = 'expectations fail';
+      return $this->check(
+        is_a($failure, Failure::class),
+        $this->negated ? 'no expectations fail' : 'expectations fail'
+      );
     }
-    $this->check(false, "test fail");
+    $this->actualMessage = 'no expectations fail';
+    $this->check(false, $this->negated ? 'no expectations fail' : 'expectations fail');
   }
 
-  protected function check($boolean, $exp) {
-    $this->expected = $exp;
+  protected function check($boolean, $expected) {
+    $this->expected = $expected;
     if ($this->negated) { $boolean = !$boolean; }
     if (!$boolean) {
       $failure = new Failure($this->failureMessage());
@@ -88,12 +95,26 @@ class Constraint {
     }
   }
 
+  private function actualMessage() {
+    return $this->actualMessage
+      ? $this->actualMessage
+      : var_export($this->actual, true);
+  }
+
   private function failureMessage() {
     $expected = is_string($this->expected)
       ? $this->expected
       : var_export($this->expected, true);
 
     return 'Expected: ' . $expected . "\n" .
-           'Actual: ' . var_export($this->actual, true);
+           'Actual: ' . $this->actualMessage();
+  }
+
+  private function handleThrowable($expectedThrowableClass, $expectedMessage, $actualThrowable) {
+    $this->actualMessage = '"' . get_class($actualThrowable) . '" was thrown';
+    $this->check(
+      is_a($actualThrowable, $expectedThrowableClass, true),
+      $expectedMessage
+    );
   }
 }

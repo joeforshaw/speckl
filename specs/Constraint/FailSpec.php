@@ -1,21 +1,20 @@
 <?php
 
 use Speckl\Constraint;
+use Speckl\Failure;
 
 describe(Constraint::class, function() {
-  describe('#', function() {
-    xit('passes for', function() {
-      expect('')->to->fail();
+  describe('#fail', function() {
+    it('passes when a Failure is thrown', function() {
+      expect(function() { throw new Failure(); })->to->fail();
     });
 
-    xit('fails for ', function() {
-      expect('')->toNot->fail();
+    it('passes when a expectation fails', function() {
+      expect(function() { expect(true)->to->beFalse(); })->to->fail();
     });
-  });
 
-  describe('#alias', function() {
-    xit('is an alias for #', function() {
-      expect(null)->to->fail();
+    it("fails when all expectations pass", function() {
+      expect(function() { expect(true)->to->beTrue(); })->toNot->fail();
     });
   });
 });
