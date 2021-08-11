@@ -3,6 +3,7 @@
 namespace Speckl;
 
 use Exception;
+use Throwable;
 
 class Constraint {
   public function __construct($expectation, $negated) {
@@ -53,15 +54,19 @@ class Constraint {
 
   public function haveKey($key) { $this->check(array_key_exists($key, $this->actual), "have key \"$key\""); }
 
-  public function raiseAnException() {
+  public function raiseAn($throwableClass) {
     try {
       call_user_func($this->actual);
-    } catch (Exception $e) {
-      $this->check(true, "raise an exception");
+    } catch (Throwable $e) {
+      $this->check(
+        get_class($throwableClass) == $throwableClass,
+        'raises a "$throwableClass"'
+      );
       return;
     }
-    $this->check(false, "raise an exception");
+    $this->check(false, 'raises a "$throwableClass"');
   }
+  public function raiseAnException() { $this->raiseAn(Exception::class); }
 
   public function fail() {
     try {
@@ -73,7 +78,7 @@ class Constraint {
     $this->check(false, "test fail");
   }
 
-  private function check($boolean, $exp) {
+  protected function check($boolean, $exp) {
     $this->expected = $exp;
     if ($this->negated) { $boolean = !$boolean; }
     if (!$boolean) {
