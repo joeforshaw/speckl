@@ -21,7 +21,8 @@ class Constraint {
   public function beNull() { $this->null(); }
 
   public function string() { $this->check(is_string($this->actual), 'string'); }
-  public function beString() { $this->string(); }
+  public function aString() { $this->string(); }
+  public function beAString() { $this->string(); }
 
   public function beEmpty() { $this->check(empty($this->actual), 'empty'); }
 
