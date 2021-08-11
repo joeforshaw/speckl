@@ -70,7 +70,7 @@ class Runner {
   }
 
   public function outputStats() {
-    $output = "\n" . Container::get('totalCount') . " examples";
+    $output = Container::get('totalCount') . " examples";
     if (Container::get('pendingCount')) {
       $output .= ", \033[33m" . Container::get('pendingCount') . " pending\033[0m";
     }
