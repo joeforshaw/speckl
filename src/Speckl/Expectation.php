@@ -4,18 +4,27 @@ namespace Speckl;
 
 class Expectation {
   public $actual,
-         $lineNumber,
-         $to,
-         $toBe,
-         $toNot,
-         $toNotBe;
+         $lineNumber;
 
   public function __construct($actual, $lineNumber) {
     $this->actual = $actual;
     $this->lineNumber = $lineNumber;
-    $this->to = new Constraint($this, false);
-    $this->toBe = $this->to;
-    $this->toNot = new Constraint($this, true);
-    $this->toNotBe = $this->toNot;
+  }
+
+  public function __get($name) {
+    if ($this->allowedTo($name)) {
+      return new Constraint($this, false);
+    }
+    if ($this->allowedToNot($name)) {
+      return new Constraint($this, true);
+    }
+  }
+
+  public function allowedTo($name) {
+    return in_array($name, ['to', 'toBe', 'toBeA']);
+  }
+
+  public function allowedToNot($name) {
+    return in_array($name, ['toNot', 'toNotBe', 'toNotBeA']);
   }
 }
