@@ -27,8 +27,17 @@ class Constraint {
   // empty() name conflicts, so can only have beEmpty()
   public function beEmpty() { $this->check(empty($this->actual), 'an empty object'); }
 
-  public function theSameSizeAs($exp) { $this->check(count($this->actual) === count($exp), 'length of ' . count($exp)); }
+  public function theSameSizeAs($exp) {
+    $this->expectedMessage = 'size of ' . $this->sizeOf($exp);
+    $this->actualMessage = 'size of ' . $this->sizeOf($this->actual);
+    $this->check(
+      $this->sizeOf($exp) === $this->sizeOf($this->actual),
+      'length of ' . count($exp)
+    );
+  }
   public function beTheSameSizeAs($exp) { $this->theSameSizeAs($exp); }
+  public function theSameLengthAs($exp) { $this->theSameSizeAs($exp); }
+  public function beTheSameLengthAs($exp) { $this->theSameSizeAs($exp); }
 
   public function AnInstanceOf($class) { $this->check($this->actual instanceof $class, "an instance of $class"); }
   public function beAnInstanceOf($class) { $this->AnInstanceOf($class); }
@@ -51,7 +60,13 @@ class Constraint {
   public function belessThanOrEqualTo($exp) { $this->lessThanOrEqualTo($exp); }
   public function lte($exp) { $this->lessThanOrEqualTo($exp); }
 
-  public function haveKey($key) { $this->check(array_key_exists($key, $this->actual), "have key \"$key\""); }
+  public function haveKey($key) {
+    $this->check(
+      $this->actual && array_key_exists($key, $this->actual),
+      "have key \"$key\""
+    );
+  }
+  public function haveArrayKey($key) { $this->haveKey($key); }
 
   // throw() name conflicts, so can only have throwA()
   public function throwA($expectedThrowableClass = Exception::class) {
@@ -101,12 +116,17 @@ class Constraint {
       : var_export($this->actual, true);
   }
 
-  private function failureMessage() {
-    $expected = is_string($this->expected)
+  private function expectedMessage() {
+    if ($this->expectedMessage) {
+      return $this->expectedMessage;
+    }
+    return is_string($this->expected)
       ? $this->expected
       : var_export($this->expected, true);
+  }
 
-    return 'Expected: ' . $expected . "\n" .
+  private function failureMessage() {
+    return 'Expected: ' . $this->expectedMessage() . "\n" .
            'Actual: ' . $this->actualMessage();
   }
 
@@ -116,5 +136,10 @@ class Constraint {
       is_a($actualThrowable, $expectedThrowableClass, true),
       $expectedMessage
     );
+  }
+
+  private function sizeOf($value) {
+    if (is_string($value)) { return strlen($value); }
+    return count($value);
   }
 }
