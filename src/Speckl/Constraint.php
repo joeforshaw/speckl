@@ -24,7 +24,8 @@ class Constraint {
   public function aString() { $this->string(); }
   public function beAString() { $this->string(); }
 
-  public function beEmpty() { $this->check(empty($this->actual), 'empty'); }
+  // empty() name conflicts, so can only have beEmpty()
+  public function beEmpty() { $this->check(empty($this->actual), 'an empty object'); }
 
   public function theSameSizeAs($exp) { $this->check(count($this->actual) === count($exp), 'length of ' . count($exp)); }
   public function beTheSameSizeAs($exp) { $this->theSameSizeAs($exp); }
