@@ -17,7 +17,11 @@ class FailureFormatter {
         $output .= $this->throwable->getMessage() . "\n\n";
         $output .= $this->block->filePath() . ':' . $expectation->lineNumber;
       } else {
-        $output .= $this->throwable;
+        $output .= '"' . get_class($this->throwable) . '"';
+        if ($this->throwable->getMessage()) {
+          $output .= ' with message "' . $this->throwable->getMessage() . '"';
+        }
+        $output .= " raised\nStack trace:\n" . $this->throwable->getTraceAsString();
       }
     }
     return $output . "\n";

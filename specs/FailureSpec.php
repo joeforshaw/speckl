@@ -6,6 +6,6 @@ describe('A failed spec', function() {
   });
 
   it('handles exceptions', function() {
-    throw new Exception();
+    throw new Exception('This is an intentional exception');
   });
 });
