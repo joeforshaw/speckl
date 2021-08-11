@@ -14,7 +14,7 @@ class GroupBlock extends Block {
   public function runBlock() {
     echo $this->indentedLabel();
     foreach ($this->childBlocks as $block) {
-      $block->runBlock();
+      $block->runBlock(); 
     }
   }
 }

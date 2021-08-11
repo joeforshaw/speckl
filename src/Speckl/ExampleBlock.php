@@ -4,6 +4,7 @@ namespace Speckl;
 
 use Error;
 use Exception;
+use ReflectionClass;
 
 class ExampleBlock extends Block {
   public function runBlock() {
@@ -13,6 +14,7 @@ class ExampleBlock extends Block {
     }
     try {
       $this->scope->beforeCallback();
+      $this->scope->subject = $this->intializeImplicitSubject();
       $this->scope->bindCallables($this->scope);
       $this->runSharedContexts($this);
       $this->runBeforeCallbacks();
@@ -33,5 +35,24 @@ class ExampleBlock extends Block {
   private function handle($throwable) {
     $failureHandlerClass = Container::get('failureHandlerClass');
     (new $failureHandlerClass())->handle($this, $throwable);
+  }
+
+  private function intializeImplicitSubject() {
+    $block = $this->parentBlock;
+    while(!is_null($block)) {
+      if ($this->hasParameterlessConstructor($block->label)) {
+        $subjectClass = $block->label;
+        return new $subjectClass();
+      }
+      $block = $block->parentBlock;
+    }
+    return null;
+  }
+
+  private function hasParameterlessConstructor($label) {
+    if (!class_exists($label)) { return false; }
+    $reflectionClass = new ReflectionClass($label);
+    $constructor = $reflectionClass->getConstructor();
+    return !$constructor || empty($constructor->getParameters());
   }
 }

@@ -5,12 +5,14 @@ namespace Speckl;
 trait ScopeTrait {
   private $__debugLabel,
           $__parentScope,
-          $__callables;
+          $__callables,
+          $subject;
 
   public function __construct($debugLabel, $parentScope) {
     $this->__debugLabel = $debugLabel;
     $this->__parentScope = $parentScope;
     $this->__callables = [];
+    $this->subject = null;
   }
 
   public function __call($name, $arguments) {
