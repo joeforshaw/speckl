@@ -3,19 +3,27 @@
 use Speckl\Constraint;
 
 describe(Constraint::class, function() {
-  describe('#', function() {
-    xit('passes for', function() {
-      expect('')->to->fail();
+  describe('#haveKey', function() {
+    it('passes when the array has the key', function() {
+      expect(['key' => 'value'])->to->haveKey('key');
     });
 
-    xit('fails for ', function() {
-      expect('')->toNot->fail();
+    it('fails when the array is empty', function() {
+      expect([])->toNot->haveKey('key');
+    });
+
+    it("fails when the array doesn't contain the key", function() {
+      expect(['other_key' => 'other_value'])->toNot->haveKey('key');
+    });
+
+    it("fails when the array is null", function() {
+      expect(null)->toNot->haveKey('key');
     });
   });
 
-  describe('#alias', function() {
-    xit('is an alias for #', function() {
-      expect(null)->to->fail();
+  describe('#haveArrayKey', function() {
+    it('aliases #haveKey', function() {
+      expect(['key' => 'value'])->to->haveKey('key');
     });
   });
 });
