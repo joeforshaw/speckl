@@ -24,7 +24,7 @@ abstract class Block {
     $this->lineNumbers = $args['lineNumbers'];
 
     $this->childBlocks = [];
-    $this->setupRelatedBlocks($args['parentBlock']);
+    $this->parentBlock = $args['parentBlock'];
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
     $this->sharedContexts = [];
@@ -42,13 +42,6 @@ abstract class Block {
 
   public function runBody() {
     call_user_func($this->body);
-  }
-
-  public function setupRelatedBlocks($parentBlock) {
-    $this->parentBlock = $parentBlock;
-    if (!$this->isRootBlock()) {
-      $this->parentBlock->addChildBlock($this);
-    }
   }
 
   public function addChildBlock($childBlock) {
@@ -146,7 +139,7 @@ abstract class Block {
   }
 
   public function endLineNumber() {
-    return $this->bodyData->getStartLine();
+    return $this->bodyData->getEndLine();
   }
 
   public function sentencePart() {
@@ -166,5 +159,16 @@ abstract class Block {
       $block = $block->parentBlock;
     }
     return ucfirst($output);
+  }
+
+  public function selectedLineNumberSet() {
+    return Container::exists('selectedLineNumber');
+  }
+
+  public function containsSelectedLineNumber() {
+    return !$this->selectedLineNumberSet() || (
+      Container::get('selectedLineNumber') >= $this->startLineNumber() &&
+      Container::get('selectedLineNumber') <= $this->endLineNumber()
+    );
   }
 }

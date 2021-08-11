@@ -19,7 +19,8 @@ function example($args) {
     'parentBlock' => Container::get('currentBlock'),
   ]);
   $exampleBlockClass = Container::get('exampleBlockClass');
-  new $exampleBlockClass($args);
+  $block = new $exampleBlockClass($args);
+  $block->loadBlock();
 }
 
 function describe($label, callable $body) {

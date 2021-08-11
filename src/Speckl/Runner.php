@@ -22,6 +22,10 @@ class Runner {
 
     // Load the spec tree
     foreach ($this->files as $filePath) {
+      list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
+      if ($lineNumber) {
+        Container::set('selectedLineNumber', $lineNumber);
+      }
       require_once $filePath;
     }
 
@@ -50,5 +54,13 @@ class Runner {
 
   public function getSharedContext($label) {
     return $this->sharedContexts[$label];
+  }
+
+  public function extractLineNumber($filePath) {
+    $parts = explode(':', $filePath);
+    if (count($parts) === 2 && is_numeric($parts[1])) {
+      return [$parts[0], intval($parts[1])];
+    }
+    return [$filePath];
   }
 }

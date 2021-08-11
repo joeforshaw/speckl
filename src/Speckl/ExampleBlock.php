@@ -7,6 +7,10 @@ use Exception;
 use ReflectionClass;
 
 class ExampleBlock extends Block {
+  public function loadBlock() {
+    $this->parentBlock->addChildBlock($this);
+  }
+
   public function runBlock() {
     if ($this->isPending()) {
       echo $this->indentedLabel("\033[33m");
