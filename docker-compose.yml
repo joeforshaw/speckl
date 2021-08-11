@@ -7,5 +7,4 @@ services:
             - ./src:/home/src
             - ./specs:/home/specs
             - ./vendor:/home/vendor
-        command: /home/bin/speckl
         working_dir: /home
