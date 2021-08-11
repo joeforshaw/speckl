@@ -45,6 +45,5 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Sub-classes per block type to make stack traces easier to read
 * Test constraints
 * More documentation
