@@ -12,11 +12,12 @@ class Expectation {
   }
 
   public function __get($name) {
+    $constraintClass = Container::get('constraintClass');
     if ($this->allowedTo($name)) {
-      return new Constraint($this, false);
+      return new $constraintClass($this, false);
     }
     if ($this->allowedToNot($name)) {
-      return new Constraint($this, true);
+      return new $constraintClass($this, true);
     }
   }
 
