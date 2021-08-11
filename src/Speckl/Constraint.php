@@ -3,6 +3,8 @@
 namespace Speckl;
 
 use Exception;
+use Speckl\Exceptions\Failure;
+use Speckl\Exceptions\InvalidConstraintException;
 
 class Constraint {
   public function __construct($expectation, $negated) {
@@ -59,6 +61,12 @@ class Constraint {
   public function lessThanOrEqualTo($exp) { $this->check($this->actual <= $exp, "less than or equal to $exp"); }
   public function belessThanOrEqualTo($exp) { $this->lessThanOrEqualTo($exp); }
   public function lte($exp) { $this->lessThanOrEqualTo($exp); }
+
+  public function contain($exp) {
+    $this->expectedMessage = var_export($this->actual, true) . " to contain " . var_export($exp, true);
+    $this->actualMessage = var_export($this->actual, true) . " doesn't contain " . var_export($exp, true);
+    $this->check($this->standardizedContain($this->actual, $exp), $exp);
+  }
 
   public function haveKey($key) {
     $this->check(
@@ -141,5 +149,33 @@ class Constraint {
   private function sizeOf($value) {
     if (is_string($value)) { return strlen($value); }
     return count($value);
+  }
+
+  private function standardizedContain($haystack, $needle) {
+    if (is_array($haystack)) {
+      if (is_array($needle) && $this->containsSubset($haystack, $needle)) {
+        return true;
+      }
+      return in_array($needle, $haystack);
+    } else if (is_string($haystack)) {
+      if (is_string($needle)) {
+        return strpos($haystack, $needle) !== false;
+      }
+      throw new InvalidConstraintException("A string can't contain an array");  
+    }
+    throw new InvalidConstraintException('The "contain" constraint can only accept strings or arrays');
+  }
+
+  private function containsSubset($haystack, $needle) {
+    if (array_intersect($haystack, $needle) == $needle) {
+      return true;
+    }
+    foreach ($haystack as $key => $value) {
+      if (!is_array($value)) { continue; }
+      if ($this->containsSubset($value, $needle)) {
+        return true;
+      };
+    }
+    return false;
   }
 }
