@@ -46,4 +46,7 @@ describe(Dog::class, function() {
 ## TODO
 
 * Test constraints
+* Enable speckl-laravel to handle PHPunit tests
+* Make contraints extendible by putting Speckl\Constraint in the container
+* Look for Config.php in specs/ for user overrides
 * More documentation
