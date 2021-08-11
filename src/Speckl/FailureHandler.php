@@ -14,7 +14,7 @@ class FailureHandler {
   }
 
   public function outputFails() {
-    echo "\n\033[01;31m";
+    echo "\033[01;31m";
     foreach (Container::get('fails') as $i => $fail) {
       echo $fail->output($i) . "\n";
     }

@@ -11,7 +11,7 @@ class FailureFormatter {
   }
 
   public function output($index) {
-    $output = ($index + 1 ) . ') ' . $this->block->sentence() . ":\n";
+    $output = "\n" . ($index + 1 ) . ') ' . $this->block->sentence() . ":\n";
     $output .= "-------------------------------------------------------\n";
     if ($this->throwable) {
       if ($this->throwable instanceof Failure) {
@@ -26,6 +26,6 @@ class FailureFormatter {
         $output .= " raised\nStack trace:\n" . $this->throwable->getTraceAsString();
       }
     }
-    return $output . "\n";
+    return $output;
   }
 }
