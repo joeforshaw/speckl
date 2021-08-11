@@ -22,13 +22,13 @@ describe(Constraint::class, function() {
   });
 
   describe('#beAString', function() {
-    it('is an alias for #aString', function() {
+    it('aliases #aString', function() {
       expect('This is a string')->to->beAString();
     });
   });
 
   describe('#string', function() {
-    it('is an alias for #aString', function() {
+    it('aliases #aString', function() {
       expect('This is a string')->toBeA->string();
     });
   });

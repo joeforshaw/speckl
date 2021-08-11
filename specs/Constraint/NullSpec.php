@@ -18,7 +18,7 @@ describe(Constraint::class, function() {
   });
 
   describe('#beNull', function() {
-    it('is an alias for #null', function() {
+    it('aliases #null', function() {
       expect(null)->to->beNull();
     });
   });

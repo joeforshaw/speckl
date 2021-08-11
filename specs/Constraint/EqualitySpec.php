@@ -44,13 +44,13 @@ describe(Constraint::class, function() {
   });
 
   describe('#equalTo', function() {
-    it('is an alias of #equal', function() {
+    it('aliases #equal', function() {
       expect(true)->toBe->equalTo(true);
     });
   });
 
   describe('#eq', function() {
-    it('is an alias of #equal', function() {
+    it('aliases #equal', function() {
       expect(true)->to->eq(true);
     });
   });
