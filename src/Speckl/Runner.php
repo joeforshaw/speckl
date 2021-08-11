@@ -20,6 +20,8 @@ class Runner {
   public function run() {
     Container::set('runner', $this);
 
+    $this->loadLocalConfig();
+
     // Load the spec tree
     foreach ($this->files as $filePath) {
       list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
@@ -47,6 +49,11 @@ class Runner {
     $this->outputStats();
 
     return $exitCode;
+  }
+
+  private function loadLocalConfig() {
+    $localConfigPath = getcwd() . "/specs/Config.php";
+    if (file_exists($localConfigPath)) { require_once $localConfigPath;}
   }
 
   public function addBlock($block) {
