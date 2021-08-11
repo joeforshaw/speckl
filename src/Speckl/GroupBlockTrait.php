@@ -2,7 +2,9 @@
 
 namespace Speckl;
 
-class GroupBlock extends Block {
+trait GroupBlockTrait {
+  use BlockTrait;
+
   public function loadBlock() {
     if (!$this->containsSelectedLineNumber()) { return; }
     if ($this->isRootBlock()) {

@@ -1,55 +1,53 @@
 <?php
 
 use Speckl\Container;
+use Speckl\Context;
+use Speckl\Describe;
 use Speckl\Expectation;
+use Speckl\It;
+use Speckl\Scenario;
 
-function group($args) {
+function group($class, $args) {
   $args = array_merge($args, [
     'parentBlock' => Container::get('currentBlock'),
   ]);
-  $groupBlockClass = Container::get('groupBlockClass');
-  $block = new $groupBlockClass($args);
+  $block = new $class($args);
   Container::set('currentBlock', $block);
   $block->loadBlock();
   Container::set('currentBlock', $block->parentBlock);
 }
 
-function example($args) {
+function example($class, $args) {
   $args = array_merge($args, [
     'parentBlock' => Container::get('currentBlock'),
   ]);
-  $exampleBlockClass = Container::get('exampleBlockClass');
-  $block = new $exampleBlockClass($args);
+  $block = new $class($args);
   $block->loadBlock();
 }
 
 function describe($label, callable $body) {
-  group([
-    'type' => 'describe',
+  group(Describe::class, [
     'label' => $label,
     'body' => $body,
   ]);
 }
 
 function context($label, callable $body) {
-  group([
-    'type' => 'context',
+  group(Context::class, [
     'label' => $label,
     'body' => $body,
   ]);
 }
 
 function it($label, callable $body) {
-  example([
-    'type' => 'it',
+  example(It::class, [
     'label' => $label,
     'body' => $body,
   ]);
 }
 
 function xit($label, callable $body) {
-  example([
-    'type' => 'xit',
+  example(It::class, [
     'label' => $label,
     'body' => $body,
     'pending' => true
@@ -57,8 +55,7 @@ function xit($label, callable $body) {
 }
 
 function scenario($label, callable $body) {
-  example([
-    'type' => 'scenario',
+  example(Scenario::class, [
     'label' => $label,
     'body' => $body,
   ]);

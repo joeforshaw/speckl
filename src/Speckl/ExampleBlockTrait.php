@@ -6,7 +6,9 @@ use Error;
 use Exception;
 use ReflectionClass;
 
-class ExampleBlock extends Block {
+trait ExampleBlockTrait {
+  use BlockTrait;
+
   public function loadBlock() {
     $this->parentBlock->addChildBlock($this);
   }
