@@ -3,19 +3,23 @@
 use Speckl\Constraint;
 
 describe(Constraint::class, function() {
-  describe('#', function() {
-    xit('passes for', function() {
-      expect('')->to->fail();
+  describe('#greaterThan', function() {
+    it('passes for when the first number is bigger than the other', function() {
+      expect(2)->toBe->greaterThan(1);
     });
 
-    xit('fails for ', function() {
-      expect('')->toNot->fail();
+    it('fails when the first number is equal to the other', function() {
+      expect(1)->toNotBe->greaterThan(1);
+    });
+
+    it('fails when the first number is less than the other', function() {
+      expect(1)->toNotBe->greaterThan(2);
     });
   });
 
-  describe('#alias', function() {
-    xit('is an alias for #', function() {
-      expect(null)->to->fail();
+  describe('#beGreaterThan', function() {
+    it('aliases #greaterThan', function() {
+      expect(2)->to->beGreaterThan(1);
     });
   });
 });
