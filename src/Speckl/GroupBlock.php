@@ -2,7 +2,7 @@
 
 namespace Speckl;
 
-class GroupBlock extends Block implements LoadableBlock, RunnableBlock {
+class GroupBlock extends Block {
   public function loadBlock() {
     if ($this->isRootBlock()) {
       $this->runner = Container::get('runner');

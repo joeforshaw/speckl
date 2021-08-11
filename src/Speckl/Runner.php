@@ -31,8 +31,8 @@ class Runner {
     }
 
     // Output fails
-    $failHandlerClass = Container::get('failHandlerClass');
-    $failHandler = new $failHandlerClass();
+    $failureHandlerClass = Container::get('failureHandlerClass');
+    $failHandler = new $failureHandlerClass();
     if ($failHandler->anyFails()) {
       $failHandler->outputFails();
     }

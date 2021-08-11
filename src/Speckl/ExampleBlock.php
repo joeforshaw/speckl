@@ -5,7 +5,7 @@ namespace Speckl;
 use Error;
 use Exception;
 
-class ExampleBlock extends Block implements RunnableBlock {
+class ExampleBlock extends Block {
   public function runBlock() {
     if ($this->isPending()) {
       echo $this->indentedLabel("\033[33m");
@@ -31,7 +31,7 @@ class ExampleBlock extends Block implements RunnableBlock {
   }
 
   private function handle($throwable) {
-    $failHandlerClass = Container::get('failHandlerClass');
-    (new $failHandlerClass())->handle($this, $throwable);
+    $failureHandlerClass = Container::get('failureHandlerClass');
+    (new $failureHandlerClass())->handle($this, $throwable);
   }
 }

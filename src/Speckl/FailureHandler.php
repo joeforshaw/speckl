@@ -2,10 +2,10 @@
 
 namespace Speckl;
 
-class FailHandler {
+class FailureHandler {
   public function handle(Block $block, $throwable) {
     $fails = Container::get('fails');
-    array_push($fails, new TestFailureFormatter($block, $throwable));
+    array_push($fails, new FailureFormatter($block, $throwable));
     Container::set('fails', $fails);
   }
 

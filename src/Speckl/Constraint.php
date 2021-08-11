@@ -64,7 +64,7 @@ class Constraint {
   public function fail() {
     try {
       call_user_func($this->actual);
-    } catch (TestFailure $failure) {
+    } catch (Failure $failure) {
       $this->check(true, "test fail");
       return;
     }
@@ -75,7 +75,7 @@ class Constraint {
     $this->expected = $exp;
     if ($this->negated) { $boolean = !$boolean; }
     if (!$boolean) {
-      $failure = new TestFailure($this->failureMessage());
+      $failure = new Failure($this->failureMessage());
       $failure->constraint = $this;
       throw $failure;
     }

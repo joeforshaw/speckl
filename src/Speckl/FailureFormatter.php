@@ -2,7 +2,7 @@
 
 namespace Speckl;
 
-class TestFailureFormatter {
+class FailureFormatter {
   public function __construct(Block $block, $throwable = null) {
     $this->block = $block;
     $this->throwable = $throwable;
@@ -12,7 +12,7 @@ class TestFailureFormatter {
     $output = ($index + 1 ) . ') ' . $this->block->sentence() . ":\n";
     $output .= "-------------------------------------------------------\n";
     if ($this->throwable) {
-      if ($this->throwable instanceof TestFailure) {
+      if ($this->throwable instanceof Failure) {
         $expectation = $this->throwable->constraint->expectation;
         $output .= $this->throwable->getMessage() . "\n\n";
         $output .= $this->block->filePath() . ':' . $expectation->lineNumber . "\n";
