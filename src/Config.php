@@ -14,4 +14,4 @@ Container::setDefault('failureCount', 0);
 Container::setDefault('pendingCount', 0);
 Container::setDefault('totalCount', 0);
 Container::setDefault('formatters', []);
-Container::setDefault('divider', "-------------------------------------------------------");
+Container::setDefault('divider', "-----------------------------------------------------------");

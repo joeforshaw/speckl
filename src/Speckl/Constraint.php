@@ -11,6 +11,8 @@ class Constraint {
     $this->expectation = $expectation;
     $this->actual = $this->expectation->actual;
     $this->negated = $negated;
+    $this->expectedMessage = null;
+    $this->actualMessage = null;
   }
 
   public function true() { $this->check($this->actual === true, true); }
