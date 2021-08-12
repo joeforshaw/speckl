@@ -22,10 +22,6 @@ describe(Dog::class, function() {
     $this->dog = new Dog();
   });
 
-  afterEach(function() {
-    // Do stuff after
-  });
-
   context('when the dog is happy', function() {
     it("wags it's tail", function() {
       $this->dog->isHappy = true;
@@ -43,7 +39,12 @@ describe(Dog::class, function() {
 });
 ```
 
-## TODO
+## Features
+
+### Shared Context
+### Shared Examples
+
+## Roadmap
 
 * Warn when running an example block
-* More documentation
+* Better documentation

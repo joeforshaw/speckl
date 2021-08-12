@@ -121,12 +121,15 @@ trait Blockish {
 
   public function resolveLazyBlock($i) {
     Container::set('currentBlock', $this);
-    $this->runBody();
+    $this->runBody($this->parentBlock);
     Container::set('currentBlock', $this->parentBlock);
     foreach ($this->childBlocks as $block) {
       $block->parentBlock = $this->parentBlock;
     }
+    // Remove the placeholder shared example block
     unset($this->parentBlock->childBlocks[$i]);
+
+    // Move the shared example child blocks to the shared example's parent
     $this->childBlocks = array_splice(
       $this->parentBlock->childBlocks, $i, 0, $this->childBlocks
     );

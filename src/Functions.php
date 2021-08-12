@@ -96,9 +96,9 @@ function includeExamples($label) {
   group(SharedExamples::class, [
     'label' => $label,
     'lazy' => true,
-    'body' => function() use ($label) {
+    'body' => function($block) use ($label) {
       $sharedExamples = Container::get('runner')->getSharedExamples($label);
-      call_user_func($sharedExamples);
+      call_user_func($block->bindScope($sharedExamples));
     },
   ]);
 }
