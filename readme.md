@@ -45,5 +45,5 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Shared examples
+* Warn when running an example block
 * More documentation
