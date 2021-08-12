@@ -6,6 +6,6 @@ class Context implements Block {
   use Group;
 
   public function sentencePart() {
-    return ', ' . $this->label . ',';
+    return ', ' . $this->label;
   }
 }

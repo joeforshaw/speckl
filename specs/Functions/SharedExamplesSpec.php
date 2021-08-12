@@ -1,8 +1,14 @@
 <?php
 
 sharedExamples('shared examples from the same file', function() {
-  it('can run examples', function() {
+  it('can run examples when included', function() {
     expect(true)->to->beTrue();
+  });
+
+  context('within a context block', function() {
+    it('can run examples when included', function() {
+      expect(true)->to->beTrue();
+    });
   });
 });
 
