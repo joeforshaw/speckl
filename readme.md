@@ -45,6 +45,5 @@ describe(Dog::class, function() {
 
 ## TODO
 
-* Enable speckl-laravel to handle PHPunit tests
 * Shared examples
 * More documentation
