@@ -2,7 +2,6 @@
 
 namespace Speckl;
 
-use Error;
 use Exception;
 use ReflectionClass;
 
@@ -30,21 +29,22 @@ trait Example {
       $this->incrementCount('success');
       echo $this->indentedLabel("\033[32m");
     } catch (Exception $exception) {
-      $this->handle($exception);
-    } catch (Error $error) {
-      $this->handle($error);
+      $this->runBlockCatch($exception);
     } finally {
-      $this->runAfterCallbacks();
-      $this->scope->afterCallback();
-      $this->incrementCount('total');
+      $this->runBlockFinally();
     }
   }
 
-  private function handle($throwable) {
-    $failureHandlerClass = Container::get('failureHandlerClass');
-    (new $failureHandlerClass())->handle($this, $throwable);
+  private function runBlockCatch($exception) {
+    (new FailureHandler())->handle($this, $exception);
     $this->incrementCount('failure');
     echo $this->indentedLabel("\033[01;31m");
+  }
+
+  private function runBlockFinally() {
+    $this->runAfterCallbacks();
+    $this->scope->afterCallback();
+    $this->incrementCount('total');
   }
 
   private function intializeImplicitSubject() {

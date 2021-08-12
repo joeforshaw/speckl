@@ -37,8 +37,7 @@ class Runner {
     }
 
     // Output fails
-    $failureHandlerClass = Container::get('failureHandlerClass');
-    $failHandler = new $failureHandlerClass();
+    $failHandler = new FailureHandler();
     if ($failHandler->anyFails()) {
       $failHandler->outputFails();
       $exitCode = Runner::FAILURE_EXIT;
