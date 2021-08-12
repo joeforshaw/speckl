@@ -2,6 +2,4 @@
 
 namespace Speckl\Exceptions;
 
-use Exception;
-
-class InvalidExpectationException extends Exception {}
+class InvalidExpectationException extends SpecklException {}

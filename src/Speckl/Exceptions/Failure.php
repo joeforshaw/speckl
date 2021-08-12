@@ -2,6 +2,6 @@
 
 namespace Speckl\Exceptions;
 
-class Failure extends \Exception {
+class Failure extends SpecklException {
   public $constraint;
 }
