@@ -2,6 +2,6 @@
 
 namespace Speckl;
 
-class SharedExamples implements Block {
+class SharedBlock implements Block {
   use Group;
 }

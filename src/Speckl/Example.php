@@ -23,7 +23,6 @@ trait Example {
       $this->scope->beforeCallback();
       $this->scope->subject = $this->intializeImplicitSubject();
       $this->scope->bindCallables($this->scope);
-      $this->runSharedContexts($this);
       $this->runBeforeCallbacks();
       $this->runBody();
       $this->incrementCount('success');

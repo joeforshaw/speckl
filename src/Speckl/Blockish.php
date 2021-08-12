@@ -11,7 +11,6 @@ trait Blockish {
          $lazy,
          $beforeCallbacks,
          $afterCallbacks,
-         $sharedContexts,
          $lineNumbers;
 
   private $body,
@@ -26,7 +25,6 @@ trait Blockish {
     $this->parentBlock = $args['parentBlock'];
     $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
     $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
-    $this->sharedContexts = [];
     $this->scope = $this->setupScope(Container::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
     $this->bodyData = new ReflectionFunction($this->body);
@@ -140,20 +138,6 @@ trait Blockish {
       return 0;
     }
     return $this->parentBlock->indentation() + 2;
-  }
-
-  public function addSharedContext(callable $sharedContext) {
-    array_push($this->sharedContexts, $sharedContext);
-  }
-
-  public function runSharedContexts($block) {
-    if ($this->parentBlock) {
-      $this->parentBlock->runSharedContexts($block);
-    }
-    foreach ($this->sharedContexts as $sharedContext) {
-      $sharedContext = $block->bindScope($sharedContext);
-      call_user_func_array($sharedContext, [$block]);
-    }
   }
 
   public function filePath() {

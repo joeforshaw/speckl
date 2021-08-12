@@ -6,7 +6,7 @@ use Speckl\Describe;
 use Speckl\Expectation;
 use Speckl\It;
 use Speckl\Scenario;
-use Speckl\SharedExamples;
+use Speckl\SharedBlock;
 
 function group($class, $args) {
   $args = array_merge($args, [
@@ -75,25 +75,14 @@ function afterEach(callable $body) {
   Container::get('currentBlock')->addAfterCallback($body);
 }
 
-function sharedContext($label, callable $body) {
-  Container::get('runner')->addSharedContext($label, $body);
+function shareBlock($label, callable $body) {
+  Container::get('runner')->addSharedBlock($label, $body);
 }
+function sharedContext($label, callable $body) { shareBlock($label, $body); }
+function sharedExamples($label, callable $body) { shareBlock($label, $body); }
 
-function includeContext($label) {
-  $currentBlock = Container::get('currentBlock');
-  $currentBlock->addSharedContext(function($block) use ($label) {
-    $sharedContext = Container::get('runner')->getSharedContext($label);
-    $sharedContext = $block->bindScope($sharedContext);
-    call_user_func_array($sharedContext, [$block]);
-  });
-}
-
-function sharedExamples($label, callable $body) {
-  Container::get('runner')->addSharedExamples($label, $body);
-}
-
-function includeExamples($label) {
-  group(SharedExamples::class, [
+function includeSharedBlock($label) {
+  group(SharedBlock::class, [
     'label' => $label,
     'lazy' => true,
     'body' => function($block) use ($label) {
@@ -102,4 +91,6 @@ function includeExamples($label) {
     },
   ]);
 }
-function itBehavesLike($label) { includeExamples($label); }
+function includeContext($label) { includeSharedBlock($label); }
+function includeExamples($label) { includeSharedBlock($label); }
+function itBehavesLike($label) { includeSharedBlock($label); }
