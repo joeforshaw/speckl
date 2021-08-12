@@ -13,15 +13,22 @@ trait Group {
     } else {
       $this->parentBlock->addChildBlock($this);
     }
-    $this->runBody();
+    if (!$this->lazy) {
+      $this->runBody();
+    }
   }
 
   public function runBlock() {
     echo $this->indentedLabel();
     $aChildBlockContainsSelectedLineNumber = $this->anyChildBlockContainsSelectedLineNumber();
+
+    // Resolve lazy blocks
+    $resolving = true;
+    do { $resolving = $this->resolveNextLazyBlock(); } while ($resolving);
+
     foreach ($this->childBlocks as $block) {
       if (!$aChildBlockContainsSelectedLineNumber || $block->containsSelectedLineNumber()) {
-        $block->runBlock(); 
+        $block->runBlock();
       }
     }
   }

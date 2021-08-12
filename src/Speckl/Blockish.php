@@ -5,9 +5,10 @@ namespace Speckl;
 use ReflectionFunction;
 
 trait Blockish {
-    public $childBlocks,
+  public $childBlocks,
          $parentBlock,
          $scope,
+         $lazy,
          $beforeCallbacks,
          $afterCallbacks,
          $sharedContexts,
@@ -29,6 +30,7 @@ trait Blockish {
     $this->scope = $this->setupScope(Container::get('scopeClass'));
     $this->body = $this->bindScope($args['body']);
     $this->bodyData = new ReflectionFunction($this->body);
+    $this->lazy = $args['lazy'];
   }
 
   public function setupScope($scopeClass) {
@@ -38,8 +40,8 @@ trait Blockish {
     );
   }
 
-  public function runBody() {
-    call_user_func($this->body);
+  public function runBody($block = null) {
+    call_user_func_array($this->body, [$block]);
   }
 
   public function addChildBlock($childBlock) {
@@ -102,6 +104,32 @@ trait Blockish {
 
   public function isPending() {
     return $this->pending;
+  }
+
+  public function isLazy() {
+    return false;
+  }
+
+  public function resolveNextLazyBlock() {
+    foreach ($this->childBlocks as $i => $block) {
+      if (!$block->lazy) { continue; }
+      $block->resolveLazyBlock($i);
+      return true;
+    }
+    return false;
+  }
+
+  public function resolveLazyBlock($i) {
+    Container::set('currentBlock', $this);
+    $this->runBody();
+    Container::set('currentBlock', $this->parentBlock);
+    foreach ($this->childBlocks as $block) {
+      $block->parentBlock = $this->parentBlock;
+    }
+    unset($this->parentBlock->childBlocks[$i]);
+    $this->childBlocks = array_splice(
+      $this->parentBlock->childBlocks, $i, 0, $this->childBlocks
+    );
   }
 
   public function indentation() {

@@ -9,12 +9,14 @@ class Runner {
 
   private $files,
           $blocks,
-          $sharedContexts;
+          $sharedContexts,
+          $sharedExamples;
 
   public function __construct($files) {
     $this->files = $files;
     $this->blocks = [];
     $this->sharedContexts = [];
+    $this->sharedExamples = [];
   }
 
   public function run() {
@@ -65,6 +67,14 @@ class Runner {
 
   public function getSharedContext($label) {
     return $this->sharedContexts[$label];
+  }
+
+  public function addSharedExamples($label, $body) {
+    $this->sharedExamples[$label] = $body;
+  }
+
+  public function getSharedExamples($label) {
+    return $this->sharedExamples[$label];
   }
 
   public function extractLineNumber($filePath) {

@@ -34,4 +34,9 @@ $files = array_merge(
   rglob(getcwd() . "/specs/*SharedContext.php")
 );
 
+$files = array_merge(
+  $files, 
+  rglob(getcwd() . "/specs/*SharedExamples.php")
+);
+
 (new Speckl\Runner($files))->run();

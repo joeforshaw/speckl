@@ -6,6 +6,7 @@ use Speckl\Describe;
 use Speckl\Expectation;
 use Speckl\It;
 use Speckl\Scenario;
+use Speckl\SharedExamples;
 
 function group($class, $args) {
   $args = array_merge($args, [
@@ -86,3 +87,19 @@ function includeContext($label) {
     call_user_func_array($sharedContext, [$block]);
   });
 }
+
+function sharedExamples($label, callable $body) {
+  Container::get('runner')->addSharedExamples($label, $body);
+}
+
+function includeExamples($label) {
+  group(SharedExamples::class, [
+    'label' => $label,
+    'lazy' => true,
+    'body' => function() use ($label) {
+      $sharedExamples = Container::get('runner')->getSharedExamples($label);
+      call_user_func($sharedExamples);
+    },
+  ]);
+}
+function itBehavesLike($label) { includeExamples($label); }
