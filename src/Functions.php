@@ -80,14 +80,16 @@ function shareBlock($label, callable $body) {
 }
 function sharedContext($label, callable $body) { shareBlock($label, $body); }
 function sharedExamples($label, callable $body) { shareBlock($label, $body); }
+function sharedExamplesFor($label, callable $body) { shareBlock($label, $body); }
+function behaviorOf($label, callable $body) { shareBlock($label, $body); }
 
 function includeSharedBlock($label) {
   group(SharedBlock::class, [
     'label' => $label,
     'lazy' => true,
     'body' => function($block) use ($label) {
-      $sharedExamples = Container::get('runner')->getSharedExamples($label);
-      call_user_func($block->bindScope($sharedExamples));
+      $sharedBlock = Container::get('runner')->getSharedBlock($label);
+      call_user_func($block->bindScope($sharedBlock));
     },
   ]);
 }

@@ -63,7 +63,7 @@ class Runner {
     $this->sharedBlocks[$label] = $body;
   }
 
-  public function getSharedExamples($label) {
+  public function getSharedBlock($label) {
     return $this->sharedBlocks[$label];
   }
 
