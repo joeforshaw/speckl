@@ -1,14 +1,8 @@
 <?php
 
-class TestClassWithNoConstructor {}
-
-class TestClassWithParameterlessConstructor {
-  public function __construct() {}
-}
-
-class TestClassWithConstructorWithParameters {
-  public function __construct($parameter) {}
-}
+use Speckl\TestClasses\TestClassWithNoConstructor;
+use Speckl\TestClasses\TestClassWithParameterlessConstructor;
+use Speckl\TestClasses\TestClassWithConstructorWithParameters;
 
 describe(TestClassWithNoConstructor::class, function() {
   it('initializes an implicit subject', function() {
