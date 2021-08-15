@@ -14,6 +14,9 @@ class Container {
     if (!array_key_exists('speckl', $GLOBALS)) {
       $GLOBALS['speckl'] = [];
     }
+    if (static::get('debug')) {
+      echo "[DEBUG] container set: $key, " . (is_object($value) ? $value->id() : $value) . "\n";
+    }
     $GLOBALS['speckl'][$key] = $value;
   }
 

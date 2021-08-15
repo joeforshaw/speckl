@@ -21,5 +21,6 @@ class RootBlock {
   public function containsSelectedLineNumber() { return false; }
   public function shouldRun() { return false; }
   public function ancestorShouldRun() { return false; }
+  public function id() { return 'Speckl\RootBlack'; }
   public function namespacedId() { return null; }
 }

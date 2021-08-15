@@ -10,10 +10,9 @@ trait Blockish {
          $scope,
          $beforeCallbacks,
          $afterCallbacks,
-         $lineNumbers;
-
-  private $body,
-          $pending;
+         $lineNumbers,
+         $body,
+         $pending;
 
   public function __construct($args) {
     $this->label = $args['label'];
@@ -47,8 +46,8 @@ trait Blockish {
     $this->body = $this->bindScope($this->body);
   }
 
-  public function runBody($block = null) {
-    call_user_func_array($this->body, [$block]);
+  public function runBody() {
+    call_user_func_array($this->body, [$this->parentBlock]);
   }
 
   public function addChildBlock($childBlock) {

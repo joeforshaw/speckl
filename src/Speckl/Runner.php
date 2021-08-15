@@ -26,11 +26,17 @@ class Runner {
     $this->loadLocalConfig();
 
     // Load the spec tree
+    if (Container::get('debug')) {
+      echo "[DEBUG] Loading spec tree\n";
+    }
     Container::set('loading', true);
     $this->runFiles();
     Container::set('loading', false);
 
     // Run the spec
+    if (Container::get('debug')) {
+      echo "[DEBUG] Running spec tree\n";
+    }
     $this->runFiles();
 
     // Output fails
@@ -46,6 +52,8 @@ class Runner {
 
     return $exitCode;
   }
+
+  public function id() { return 'Speckl\Runner'; }
 
   private function runFiles() {
     foreach ($this->files as $filePath) {
@@ -96,9 +104,9 @@ class Runner {
     $this->blockIndex[$block->namespacedId()] = $block;
   }
 
-  public function getLoadedBlock($class, $label) {
+  public function getLoadedBlock($class, $args) {
     $parentBlock = Container::get('currentBlock');
-    $indexKey = BlockIdentifier::create($parentBlock, $class, $label);
+    $indexKey = BlockIdentifier::create($parentBlock, $class, $args);
     return $this->blockIndex[$indexKey];
   }
 }

@@ -9,31 +9,28 @@ use Speckl\Scenario;
 use Speckl\SharedBlock;
 
 function group($class, $args) {
-  $args = array_merge($args, [
-    'parentBlock' => Container::get('currentBlock'),
-  ]);
+  $args['parentBlock'] = Container::get('currentBlock');
   if (Container::get('loading')) {
     $block = new $class($args);
     Container::set('currentBlock', $block);
     Container::get('runner')->loadBlock($block);
     Container::set('currentBlock', $block->parentBlock);
   } else {
-    $block = Container::get('runner')->getLoadedBlock($class, $args['label']);
+    $parentBlock = Container::get('currentBlock');
+    $block = Container::get('runner')->getLoadedBlock($class, $args);
     Container::set('currentBlock', $block);
     if ($block) { $block->runBlock(); }
-    Container::set('currentBlock', $block->parentBlock);
+    Container::set('currentBlock', $parentBlock);
   }
 }
 
 function example($class, $args) {
+  $args['parentBlock'] = Container::get('currentBlock');
   if (Container::get('loading')) {
-    $args = array_merge($args, [
-      'parentBlock' => Container::get('currentBlock'),
-    ]);
     $block = new $class($args);
     Container::get('runner')->loadBlock($block);
   } else {
-    $block = Container::get('runner')->getLoadedBlock($class, $args['label']);
+    $block = Container::get('runner')->getLoadedBlock($class, $args);
     if ($block) {
       $block->setupScope();
       $block->runBlock();
@@ -93,9 +90,11 @@ function behaviorOf($label, callable $body) { shareBlock($label, $body); }
 function includeSharedBlock($label) {
   group(SharedBlock::class, [
     'label' => $label,
-    'body' => function($block) use ($label) {
-      $sharedBlock = Container::get('runner')->getSharedBlock($label);
-      call_user_func($block->bindScope($sharedBlock));
+    'body' => function($parentBlock) use ($label) {
+      if (!Container::get('loading')) {
+        $sharedBlock = Container::get('runner')->getSharedBlock($label);
+        call_user_func($parentBlock->bindScope($sharedBlock));
+      }
     },
   ]);
 }
