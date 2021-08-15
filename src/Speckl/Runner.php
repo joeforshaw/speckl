@@ -8,33 +8,30 @@ class Runner {
   const EXCEPTION_EXIT = 2;
 
   private $files,
-          $blocks,
-          $sharedBlocks;
+          $rootBlock,
+          $sharedBlocks,
+          $blockIndex;
 
   public function __construct($files) {
     $this->files = $files;
-    $this->blocks = [];
     $this->sharedBlocks = [];
+    $this->rootBlock = new RootBlock();
+    $this->blockIndex = [];
   }
 
   public function run() {
     Container::set('runner', $this);
+    Container::set('currentBlock', $this->rootBlock);
 
     $this->loadLocalConfig();
 
     // Load the spec tree
-    foreach ($this->files as $filePath) {
-      list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
-      if ($lineNumber) {
-        Container::set('selectedLineNumber', $lineNumber);
-      }
-      require_once $filePath;
-    }
+    Container::set('loading', true);
+    $this->runFiles();
+    Container::set('loading', false);
 
-    // Run the spec tree
-    foreach ($this->blocks as $block) {
-      $block->runBlock();
-    }
+    // Run the spec
+    $this->runFiles();
 
     // Output fails
     $failHandler = new FailureHandler();
@@ -50,13 +47,19 @@ class Runner {
     return $exitCode;
   }
 
+  private function runFiles() {
+    foreach ($this->files as $filePath) {
+      list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
+      if ($lineNumber) {
+        Container::set('selectedLineNumber', $lineNumber);
+      }
+      require $filePath;
+    }
+  }
+
   private function loadLocalConfig() {
     $localConfigPath = getcwd() . "/specs/Config.php";
     if (file_exists($localConfigPath)) { require_once $localConfigPath;}
-  }
-
-  public function addBlock($block) {
-    array_push($this->blocks, $block);
   }
 
   public function addSharedBlock($label, $body) {
@@ -86,5 +89,16 @@ class Runner {
       $output .= ', 0 failed';
     }
     echo $output . "\n\n";
+  }
+
+  public function loadBlock($block) {
+    $block->loadBlock();
+    $this->blockIndex[$block->namespacedId()] = $block;
+  }
+
+  public function getLoadedBlock($class, $label) {
+    $parentBlock = Container::get('currentBlock');
+    $indexKey = BlockIdentifier::create($parentBlock, $class, $label);
+    return $this->blockIndex[$indexKey];
   }
 }

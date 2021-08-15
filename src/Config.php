@@ -5,6 +5,7 @@ use Speckl\Container;
 use Speckl\Scope;
 
 Container::setDefault('runner', null);
+Container::setDefault('loading', false);
 Container::setDefault('currentBlock', null);
 Container::setDefault('scopeClass', Scope::class);
 Container::setDefault('constraintClass', Constraint::class);
