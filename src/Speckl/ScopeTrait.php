@@ -15,6 +15,7 @@ trait ScopeTrait {
     $this->__callables = [];
     $this->__debugLabel = $debugLabel;
     $this->subject = null;
+    $this->id = uniqid();
   }
 
   public function __call($name, $arguments) {
@@ -54,7 +55,7 @@ trait ScopeTrait {
   }
 
   public function debug() {
-    return $this->__debugLabel;
+    return "[" . $this->id . "] " . $this->__debugLabel;
   }
 
   // Intentionally empty to allow extension

@@ -131,7 +131,7 @@ class Constraint {
       return $this->expectedMessage;
     }
     return is_string($this->expected)
-      ? $this->expected
+      ? "'" . $this->expected . "'"
       : var_export($this->expected, true);
   }
 

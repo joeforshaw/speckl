@@ -7,12 +7,14 @@ class Runner {
   const FAILURE_EXIT   = 1;
   const EXCEPTION_EXIT = 2;
 
-  private $files,
+  private $allFiles,
+          $files,
           $rootBlock,
           $sharedBlocks,
           $blockIndex;
 
-  public function __construct($files) {
+  public function __construct($allFiles, $files) {
+    $this->allFiles = $allFiles;
     $this->files = $files;
     $this->sharedBlocks = [];
     $this->rootBlock = new RootBlock();
@@ -25,19 +27,16 @@ class Runner {
 
     $this->loadLocalConfig();
 
-    // Load the spec tree
-    if (Container::get('debug')) {
-      echo "[DEBUG] Loading spec tree\n";
-    }
+    // Load the shared blocks
     Container::set('loading', true);
-    $this->runFiles();
+    $this->runFiles($this->allFiles);
     Container::set('loading', false);
 
     // Run the spec
     if (Container::get('debug')) {
       echo "[DEBUG] Running spec tree\n";
     }
-    $this->runFiles();
+    $this->runFiles($this->files);
 
     // Output fails
     $failHandler = new FailureHandler();
@@ -55,8 +54,8 @@ class Runner {
 
   public function id() { return 'Speckl\Runner'; }
 
-  private function runFiles() {
-    foreach ($this->files as $filePath) {
+  private function runFiles($files) {
+    foreach ($files as $filePath) {
       list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
       if ($lineNumber) {
         Container::set('selectedLineNumber', $lineNumber);

@@ -8,7 +8,6 @@ trait Group {
   public function loadBlock() {
     if (!$this->shouldRun()) { return; }
     $this->parentBlock->addChildBlock($this);
-    $this->runBody();
   }
 
   public function runBlock() {

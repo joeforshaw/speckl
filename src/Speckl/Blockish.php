@@ -37,6 +37,7 @@ trait Blockish {
   }
 
   public function setupScope() {
+    if ($this->scope) { return; }
     $scopeClass = Container::get('scopeClass');
     $this->scope = new $scopeClass(
       $this,
