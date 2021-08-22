@@ -23,20 +23,7 @@ function rglob($pattern, $flags = 0) {
   return $files;
 }
 
-if (count($argv) > 1) {
-  $files = array_slice($argv, 1);
-} else {
-  $files = rglob(getcwd() . "/specs/*Spec.php");
-}
+$allFiles = rglob(getcwd() . "/specs/*Spec.php");
+$files = count($argv) > 1 ? array_slice($argv, 1) : $allFiles;
 
-$files = array_merge(
-  $files, 
-  rglob(getcwd() . "/specs/*SharedContext.php")
-);
-
-$files = array_merge(
-  $files, 
-  rglob(getcwd() . "/specs/*SharedExamples.php")
-);
-
-(new Speckl\Runner($files))->run();
+(new Speckl\Runner($allFiles, $files))->run();

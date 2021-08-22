@@ -7,34 +7,36 @@ class Runner {
   const FAILURE_EXIT   = 1;
   const EXCEPTION_EXIT = 2;
 
-  private $files,
-          $blocks,
-          $sharedBlocks;
+  private $allFiles,
+          $files,
+          $rootBlock,
+          $sharedBlocks,
+          $blockIndex;
 
-  public function __construct($files) {
+  public function __construct($allFiles, $files) {
+    $this->allFiles = $allFiles;
     $this->files = $files;
-    $this->blocks = [];
     $this->sharedBlocks = [];
+    $this->rootBlock = new RootBlock();
+    $this->blockIndex = [];
   }
 
   public function run() {
     Container::set('runner', $this);
+    Container::set('currentBlock', $this->rootBlock);
 
     $this->loadLocalConfig();
 
-    // Load the spec tree
-    foreach ($this->files as $filePath) {
-      list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
-      if ($lineNumber) {
-        Container::set('selectedLineNumber', $lineNumber);
-      }
-      require_once $filePath;
-    }
+    // Load the shared blocks
+    Container::set('loading', true);
+    $this->runFiles($this->allFiles);
+    Container::set('loading', false);
 
-    // Run the spec tree
-    foreach ($this->blocks as $block) {
-      $block->runBlock();
+    // Run the spec
+    if (Container::get('debug')) {
+      echo "[DEBUG] Running spec tree\n";
     }
+    $this->runFiles($this->files);
 
     // Output fails
     $failHandler = new FailureHandler();
@@ -50,20 +52,28 @@ class Runner {
     return $exitCode;
   }
 
+  public function id() { return 'Speckl\Runner'; }
+
+  private function runFiles($files) {
+    foreach ($files as $filePath) {
+      list($filePath, $lineNumber) = $this->extractLineNumber($filePath);
+      if ($lineNumber) {
+        Container::set('selectedLineNumber', $lineNumber);
+      }
+      require $filePath;
+    }
+  }
+
   private function loadLocalConfig() {
     $localConfigPath = getcwd() . "/specs/Config.php";
     if (file_exists($localConfigPath)) { require_once $localConfigPath;}
-  }
-
-  public function addBlock($block) {
-    array_push($this->blocks, $block);
   }
 
   public function addSharedBlock($label, $body) {
     $this->sharedBlocks[$label] = $body;
   }
 
-  public function getSharedExamples($label) {
+  public function getSharedBlock($label) {
     return $this->sharedBlocks[$label];
   }
 
@@ -86,5 +96,16 @@ class Runner {
       $output .= ', 0 failed';
     }
     echo $output . "\n\n";
+  }
+
+  public function loadBlock($block) {
+    $block->loadBlock();
+    $this->blockIndex[$block->namespacedId()] = $block;
+  }
+
+  public function getLoadedBlock($class, $args) {
+    $parentBlock = Container::get('currentBlock');
+    $indexKey = BlockIdentifier::create($parentBlock, $class, $args);
+    return $this->blockIndex[$indexKey];
   }
 }

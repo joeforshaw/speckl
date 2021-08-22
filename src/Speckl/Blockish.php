@@ -8,13 +8,11 @@ trait Blockish {
   public $childBlocks,
          $parentBlock,
          $scope,
-         $lazy,
          $beforeCallbacks,
          $afterCallbacks,
-         $lineNumbers;
-
-  private $body,
-          $pending;
+         $lineNumbers,
+         $body,
+         $pending;
 
   public function __construct($args) {
     $this->label = $args['label'];
@@ -23,23 +21,34 @@ trait Blockish {
 
     $this->childBlocks = [];
     $this->parentBlock = $args['parentBlock'];
-    $this->beforeCallbacks = $this->parentBlock ? $this->parentBlock->beforeCallbacks : [];
-    $this->afterCallbacks = $this->parentBlock ? $this->parentBlock->afterCallbacks : [];
-    $this->scope = $this->setupScope(Container::get('scopeClass'));
-    $this->body = $this->bindScope($args['body']);
+    $this->beforeCallbacks = $this->parentBlock->beforeCallbacks ? $this->parentBlock->beforeCallbacks : [];
+    $this->afterCallbacks = $this->parentBlock->afterCallbacks ? $this->parentBlock->afterCallbacks : [];
+    $this->body = $args['body'];
     $this->bodyData = new ReflectionFunction($this->body);
-    $this->lazy = $args['lazy'];
+    $this->identifier = new BlockIdentifier($this);
   }
 
-  public function setupScope($scopeClass) {
-    return new $scopeClass(
-      self::class . '/' . $this->label,
-      $this->parentBlock ? $this->parentBlock->scope : null
+  public function id() {
+    return $this->identifier->id();
+  }
+
+  public function namespacedId() {
+    return $this->identifier->namespacedId();
+  }
+
+  public function setupScope() {
+    if ($this->scope) { return; }
+    $scopeClass = Container::get('scopeClass');
+    $this->scope = new $scopeClass(
+      $this,
+      $this->parentBlock ? $this->parentBlock->scope : null,
+      self::class . '/' . $this->label
     );
+    $this->body = $this->bindScope($this->body);
   }
 
-  public function runBody($block = null) {
-    call_user_func_array($this->body, [$block]);
+  public function runBody() {
+    call_user_func_array($this->body, [$this->parentBlock]);
   }
 
   public function addChildBlock($childBlock) {
@@ -74,10 +83,6 @@ trait Blockish {
     array_push($this->beforeCallbacks, $beforeCallback);
   }
 
-  public function prependBeforeCallback($beforeCallback) {
-    array_unshift($this->beforeCallbacks, $beforeCallback);
-  }
-
   public function runBeforeCallbacks() {
     foreach ($this->beforeCallbacks as $beforeCallback) {
       $beforeCallback = $this->bindScope($beforeCallback);
@@ -96,42 +101,8 @@ trait Blockish {
     }
   }
 
-  public function isRootBlock() {
-    return is_null($this->parentBlock);
-  }
-
-  public function isPending() {
-    return $this->pending;
-  }
-
-  public function isLazy() {
-    return false;
-  }
-
-  public function resolveNextLazyBlock() {
-    foreach ($this->childBlocks as $i => $block) {
-      if (!$block->lazy) { continue; }
-      $block->resolveLazyBlock($i);
-      return true;
-    }
-    return false;
-  }
-
-  public function resolveLazyBlock($i) {
-    Container::set('currentBlock', $this);
-    $this->runBody($this->parentBlock);
-    Container::set('currentBlock', $this->parentBlock);
-    foreach ($this->childBlocks as $block) {
-      $block->parentBlock = $this->parentBlock;
-    }
-    // Remove the placeholder shared example block
-    unset($this->parentBlock->childBlocks[$i]);
-
-    // Move the shared example child blocks to the shared example's parent
-    $this->childBlocks = array_splice(
-      $this->parentBlock->childBlocks, $i, 0, $this->childBlocks
-    );
-  }
+  public function isRootBlock() { return false; }
+  public function isPending() { return $this->pending; }
 
   public function indentation() {
     if (!$this->parentBlock) {
@@ -163,12 +134,38 @@ trait Blockish {
     $block = $this->parentBlock;
     $output = $this->label;
     while(!is_null($block)) {
-      $output = $block->sentencePart()
-        . (substr($output, 0, 1) === ',' ? '' : ' ')
-        . $output;
+      if ($block->sentencePart()) {
+        $output = $block->sentencePart()
+          . (substr($output, 0, 1) === ',' ? '' : ' ')
+          . $output;
+      }
       $block = $block->parentBlock;
     }
     return ucfirst($output);
+  }
+
+  public function debug() {
+    echo "[DEBUG] ------------------------------------------------------\n";
+    echo "[DEBUG] " . $this->id() . "\n";
+    echo "[DEBUG] ------------------------------------------------------\n";
+    echo "[DEBUG] Should run: " . var_export($this->shouldRun(), true) . "\n";
+    echo "[DEBUG] Selected line number: " . Container::get('selectedLineNumber') . "\n";
+    echo "[DEBUG] Start line number: " . $this->startLineNumber() . "\n";
+    echo "[DEBUG] End line number: " . $this->endLineNumber() . "\n";
+    echo "[DEBUG] Child blocks: " . count($this->childBlocks) . "\n";
+  }
+
+  ////////////////////////////////////////////
+
+  public function shouldRun() {
+    return $this->containsSelectedLineNumber() || $this->ancestorShouldRun();
+  }
+
+  public function ancestorShouldRun() {
+    return $this->parentBlock->ancestorShouldRun() || (
+      $this->parentBlock->containsSelectedLineNumber() &&
+     !$this->parentBlock->childContainsSelectedLineNumber()
+    );
   }
 
   public function selectedLineNumberSet() {
@@ -180,5 +177,21 @@ trait Blockish {
       Container::get('selectedLineNumber') >= $this->startLineNumber() &&
       Container::get('selectedLineNumber') <= $this->endLineNumber()
     );
+  }
+
+  public function childContainsSelectedLineNumber() {
+    if (is_null($this->childContainsSelectedLineNumber)) {
+      $this->childContainsSelectedLineNumber = $this->checkChildContainsSelectedLineNumber();
+    }
+    return $this->childContainsSelectedLineNumber;
+  }
+
+  public function checkChildContainsSelectedLineNumber() {
+    foreach ($this->childBlocks as $childBlock) {
+      if ($childBlock->containsSelectedLineNumber()) {
+        return true;
+      }
+    }
+    return false;
   }
 }

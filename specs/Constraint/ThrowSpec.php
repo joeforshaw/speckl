@@ -1,9 +1,8 @@
 <?php
 
 use Speckl\Constraint;
-
-class TestThrowConstraintException extends Exception {}
-class AnotherTestThrowConstraintException extends Exception {}
+use Speckl\TestClasses\AnotherTestThrowConstraintException;
+use Speckl\TestClasses\TestThrowConstraintException;
 
 describe(Constraint::class, function() {
   describe('#throwA', function() {

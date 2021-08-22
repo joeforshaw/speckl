@@ -41,10 +41,15 @@ describe(Dog::class, function() {
 
 ## Features
 
-### Shared Context
-### Shared Examples
+### Defining a test
+
+### Contexts
+
+### Test lifecyles
+
+### Sharing code
 
 ## Roadmap
 
-* Warn when running an example block
+* Allow block function options and auto detection of function params
 * Better documentation

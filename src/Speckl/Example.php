@@ -13,13 +13,14 @@ trait Example {
   }
 
   public function runBlock() {
+    if (!$this->shouldRun()) { return; }
     try {
       if ($this->isPending()) {
         echo $this->indentedLabel("\033[33m");
         $this->incrementCount('pending');
         return;
       }
-
+      $this->setupScope();
       $this->scope->beforeCallback();
       $this->scope->subject = $this->intializeImplicitSubject();
       $this->scope->bindCallables($this->scope);

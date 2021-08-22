@@ -6,45 +6,36 @@ use Speckl\Describe;
 use Speckl\Expectation;
 use Speckl\It;
 use Speckl\Scenario;
-use Speckl\SharedBlock;
 
 function group($class, $args) {
-  $args = array_merge($args, [
-    'parentBlock' => Container::get('currentBlock'),
-  ]);
+  if (Container::get('loading')) { return; } 
+  $args['parentBlock'] = Container::get('currentBlock');
   $block = new $class($args);
   Container::set('currentBlock', $block);
-  $block->loadBlock();
-  Container::set('currentBlock', $block->parentBlock);
+  Container::get('runner')->loadBlock($block);
+  $block->runBlock();
+  Container::set('currentBlock', $args['parentBlock']);
 }
 
 function example($class, $args) {
-  $args = array_merge($args, [
-    'parentBlock' => Container::get('currentBlock'),
-  ]);
+  if (Container::get('loading')) { return; }
+  $args['parentBlock'] = Container::get('currentBlock');
   $block = new $class($args);
-  $block->loadBlock();
+  Container::get('runner')->loadBlock($block);
+  $block->setupScope();
+  $block->runBlock();
 }
 
 function describe($label, callable $body) {
-  group(Describe::class, [
-    'label' => $label,
-    'body' => $body,
-  ]);
+  group(Describe::class, [ 'label' => $label, 'body' => $body ]);
 }
 
 function context($label, callable $body) {
-  group(Context::class, [
-    'label' => $label,
-    'body' => $body,
-  ]);
+  group(Context::class, [ 'label' => $label, 'body' => $body ]);
 }
 
 function it($label, callable $body) {
-  example(It::class, [
-    'label' => $label,
-    'body' => $body,
-  ]);
+  example(It::class, [ 'label' => $label, 'body' => $body ]);
 }
 
 function xit($label, callable $body) {
@@ -56,10 +47,7 @@ function xit($label, callable $body) {
 }
 
 function scenario($label, callable $body) {
-  example(Scenario::class, [
-    'label' => $label,
-    'body' => $body,
-  ]);
+  example(Scenario::class, [ 'label' => $label, 'body' => $body ]);
 }
 
 function expect($expectedValue) {
@@ -68,10 +56,12 @@ function expect($expectedValue) {
 }
 
 function beforeEach(callable $body) {
+  if (Container::get('loading')) { return; }
   Container::get('currentBlock')->addBeforeCallback($body);
 }
 
 function afterEach(callable $body) {
+  if (Container::get('loading')) { return; }
   Container::get('currentBlock')->addAfterCallback($body);
 }
 
@@ -80,16 +70,15 @@ function shareBlock($label, callable $body) {
 }
 function sharedContext($label, callable $body) { shareBlock($label, $body); }
 function sharedExamples($label, callable $body) { shareBlock($label, $body); }
+function sharedExamplesFor($label, callable $body) { shareBlock($label, $body); }
+function behaviorOf($label, callable $body) { shareBlock($label, $body); }
 
 function includeSharedBlock($label) {
-  group(SharedBlock::class, [
-    'label' => $label,
-    'lazy' => true,
-    'body' => function($block) use ($label) {
-      $sharedExamples = Container::get('runner')->getSharedExamples($label);
-      call_user_func($block->bindScope($sharedExamples));
-    },
-  ]);
+  if (Container::get('loading')) { return; }
+  $block = Container::get('currentBlock');
+  $sharedBlock = Container::get('runner')->getSharedBlock($label);
+  $block->setupScope();
+  call_user_func($block->bindScope($sharedBlock));
 }
 function includeContext($label) { includeSharedBlock($label); }
 function includeExamples($label) { includeSharedBlock($label); }
