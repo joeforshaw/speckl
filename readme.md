@@ -51,5 +51,4 @@ describe(Dog::class, function() {
 
 ## Roadmap
 
-* Allow block function options and auto detection of function params
 * Better documentation
