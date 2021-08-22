@@ -7,7 +7,20 @@ use Speckl\Expectation;
 use Speckl\It;
 use Speckl\Scenario;
 
-function group($class, $args) {
+function specklArgs($args, $additionalArgs = []) {
+  $output = ['label' => $args[0]];
+  if (is_array($args[1])) {
+    $output['options'] = $args[1];
+    $output['body'] = $args[2];
+  } else {
+    $output['body'] = $args[1];
+    $output['options'] = [];
+  }
+  return array_merge($output, $additionalArgs);
+}
+
+function group($class, $functionArgs, $additionalArgs = []) {
+  $args = specklArgs($functionArgs, $additionalArgs);
   if (Container::get('loading')) { return; } 
   $args['parentBlock'] = Container::get('currentBlock');
   $block = new $class($args);
@@ -17,7 +30,8 @@ function group($class, $args) {
   Container::set('currentBlock', $args['parentBlock']);
 }
 
-function example($class, $args) {
+function example($class, $functionArgs, $additionalArgs = []) {
+  $args = specklArgs($functionArgs, $additionalArgs);
   if (Container::get('loading')) { return; }
   $args['parentBlock'] = Container::get('currentBlock');
   $block = new $class($args);
@@ -26,28 +40,24 @@ function example($class, $args) {
   $block->runBlock();
 }
 
-function describe($label, callable $body) {
-  group(Describe::class, [ 'label' => $label, 'body' => $body ]);
+function describe() {
+  group(Describe::class, func_get_args());
 }
 
-function context($label, callable $body) {
-  group(Context::class, [ 'label' => $label, 'body' => $body ]);
+function context() {
+  group(Context::class, func_get_args());
 }
 
-function it($label, callable $body) {
-  example(It::class, [ 'label' => $label, 'body' => $body ]);
+function it() {
+  example(It::class, func_get_args());
 }
 
-function xit($label, callable $body) {
-  example(It::class, [
-    'label' => $label,
-    'body' => $body,
-    'pending' => true
-  ]);
+function xit() {
+  example(It::class, func_get_args(), ['pending' => true]);
 }
 
-function scenario($label, callable $body) {
-  example(Scenario::class, [ 'label' => $label, 'body' => $body ]);
+function scenario() {
+  example(Scenario::class, func_get_args());
 }
 
 function expect($expectedValue) {

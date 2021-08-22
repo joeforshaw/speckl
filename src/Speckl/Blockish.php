@@ -12,6 +12,7 @@ trait Blockish {
          $afterCallbacks,
          $lineNumbers,
          $body,
+         $options,
          $pending;
 
   public function __construct($args) {
@@ -26,6 +27,7 @@ trait Blockish {
     $this->body = $args['body'];
     $this->bodyData = new ReflectionFunction($this->body);
     $this->identifier = new BlockIdentifier($this);
+    $this->options = $args['options'];
   }
 
   public function id() {
